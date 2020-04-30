@@ -62,7 +62,7 @@ checks = [
     ("(int 1234)", 1234),
     ("(add (int 1) (int 2))", 3),
     ("(defn test [a b] ( (add a b) )) (test (int 1) (int 2))", 3),
-    ("(defn test [a b] ( (add 1 a b) (add a b) )) (test (int 1) (int 2))", 3),
+    ("(defn test [a b] ( (add (int 1) a b) (add a b) )) (test (int 1) (int 2))", 3),
     # TODO: Test to inherited variables in Executor
 ]
 
