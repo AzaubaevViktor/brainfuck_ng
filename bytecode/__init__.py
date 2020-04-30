@@ -92,3 +92,9 @@ class ByteCode:
                 self.items.append((opcode, index))
             else:
                 raise UnknownByteCode(opcode)
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, index) -> Tuple[int, int]:
+        return self.items[index]
