@@ -19,28 +19,29 @@ _debug_bc = {
 }
 
 
+def _print_items(items, current, fmt='{{{}}}', fmt_item='{}'):
+    for index_, item_ in enumerate(items):
+        item = fmt_item.format(item_)
+
+        if index_ - 1 == current:
+            s = f" {item}"
+        elif index_ + 1 == current:
+            s = f"{item} "
+        elif index_ == current:
+            s = fmt.format(item)
+        else:
+            s = f" {item} "
+
+        print(s, end='')
+    print()
+
+
 def _debug(step: int, code: ByteCode, CP: int, mem: Mem, MP: int, out: str):
     print(">>", step, f"CP: {CP}; MP: {MP}")
 
-    for index_, item in enumerate(code.items):
-        s = f"{_debug_bc[item[0]]}:{item[1]}"
-        if index_ == CP:
-            s = f"{{{s}}}"
-        else:
-            s = f" {s} "
-
-        print(s, end="")
-    print()
-
-    for index_, item in enumerate(mem.data):
-        s = f"{item:3}"
-        if index_ == CP:
-            s = f"{{{s}}}"
-        else:
-            s = f" {s} "
-
-        print(s, end="")
-    print()
+    _print_items(code.items, CP, fmt_item="{0[0]}:{0[1]}")
+    _print_items(mem.data, MP, fmt_item="{:3}")
+    print(out)
 
 
 @pytest.mark.parametrize('prg, mem', (
