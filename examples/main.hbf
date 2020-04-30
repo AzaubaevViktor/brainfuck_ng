@@ -1,0 +1,29 @@
+(defn read_int [] (
+    (set value 0)
+    (set multiple 1)
+    (cycle (
+        (set ch read)
+        (if (eq ch ' ') break)
+        (if (eq ch '\n') break)
+        (add value (mul multiple (sub ch 'a')))
+        (imul multiple 10)
+    ))
+    (return value)
+))
+
+(defn print_num [a i8] (
+    (while a (
+        (raise NotImplementedError)
+    ))
+))
+
+
+(print "Enter <op> <num> <num>")
+
+(set op_char char @read)
+
+(if (eq op_char '+')
+    (print_num (add read_int read_int)))
+
+(if (eq op_char '-')
+    (print_num (sub read_int read_int)))
