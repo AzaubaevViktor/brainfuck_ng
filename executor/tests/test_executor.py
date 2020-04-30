@@ -19,11 +19,13 @@ def executor():
 
     def defn(name: Lemma, arguments: List[Lemma], commands: tuple, calc, executor: Executor):
         def new_func(*args, calc, executor: Executor):
+            # TODO: Wrong arguments Exception
             assert len(arguments) == len(args)
 
             sub = executor.sub()
 
             for arg_lemma, arg in zip(arguments, args):
+                # TODO: Error while argument calculation Exception
                 sub.variables[arg_lemma.text] = calc(arg)
 
             return sub(commands)

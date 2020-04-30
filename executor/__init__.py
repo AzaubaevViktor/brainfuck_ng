@@ -1,5 +1,24 @@
 from lexer import ProgramT, Lemma
 
+"""
+TODO: 
+Exception:
+  * Environment
+    * Call stack
+    * Variables stack
+  * Message
+  * Additional info
+
+TODO:
+Call stack
+Stack item:
+  * Source
+  * Line
+  * Position
+  * Stage
+
+"""
+
 
 class Executor:
     def __init__(self, variables: dict):
@@ -25,6 +44,7 @@ class Executor:
         raise TypeError("Unknown type", type(item), item)
 
     def _call_lemma(self, item):
+        # TODO: Unknown variable Exception
         return self.variables[item.text]
 
     def sub(self) -> "Executor":
@@ -37,4 +57,5 @@ class Executor:
         func = self.calc(program[0])
         args = program[1:]
 
+        # TODO: Exception wrapper for function
         return func(*args, calc=self.calc, executor=self)
