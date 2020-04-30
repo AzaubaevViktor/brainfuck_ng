@@ -33,6 +33,7 @@ def check_correct(lexes, result, check: Callable[[Any, Any], bool]):
     return True
 
 
-@pytest.mark.parametrize('source, result', checks)
-def test_lexer(source, result):
-    assert check_correct(do_lex(source), result, lambda lex, res: lex.text == res)
+@pytest.mark.parametrize('source, expected', checks)
+def test_lexer(source, expected):
+    result = do_lex(source)
+    assert check_correct(result, expected, lambda lex, res: lex.text == res)
