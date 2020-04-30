@@ -12,11 +12,11 @@ class Executor:
             result = self._call_lemma(program)
         else:
             for item in program:
-                result = self._call_item(item)
+                result = self.call_item(item)
 
         return result
 
-    def _call_item(self, item):
+    def call_item(self, item):
         if isinstance(item, tuple):
             return self._call_tuple(item)
         elif isinstance(item, Lemma):
@@ -34,7 +34,7 @@ class Executor:
         return Executor(new_variables)
 
     def _call_tuple(self, program: tuple):
-        func = self._call_item(program[0])
+        func = self.call_item(program[0])
         args = program[1:]
 
-        return func(*args, executor=self._call_item)
+        return func(*args, calc=self.call_item, executor=self)

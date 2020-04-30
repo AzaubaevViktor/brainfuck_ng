@@ -10,28 +10,27 @@ from lexer import Lemma, do_lex, NameSpace
 def executor():
     items = []
 
-    def append_(lemma: Lemma, executor):
-        items.append((lemma.text, executor(lemma)))
+    def append_(lemma: Lemma, calc, executor):
+        items.append((lemma.text, calc(lemma)))
 
-    def ret_(executor):
+    def ret_(calc, executor):
         return items
 
-    def defn(name: Lemma, arguments: list, commands: tuple, executor: Executor):
+    def defn(name: Lemma, arguments: list, commands: tuple, calc, executor: Executor):
         sub = executor.sub()
 
-        def new_func(*args, executor: Executor):
+        def new_func(*args, calc, executor: Executor):
             assert len(arguments)
 
         new_func.__name__ = f"generated_{name.text}"
 
         sub.variables[name.text] = None
 
-
-    def to_int(lemma: Lemma, executor: Executor):
+    def to_int(lemma: Lemma, calc, executor: Executor):
         return int(lemma.text)
 
-    def add(*lemmas: Lemma, executor: Executor):
-        return sum(executor(lemma) for lemma in lemmas)
+    def add(*lemmas: Lemma, calc, executor: Executor):
+        return sum(calc(lemma) for lemma in lemmas)
 
     variables = {
         'hello': 'world',
