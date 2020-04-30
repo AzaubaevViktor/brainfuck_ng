@@ -16,14 +16,14 @@ def executor():
     def ret_():
         return items
 
-    ns = {
+    variables = {
         'hello': 'world',
         'add': operator.add,
         'append': append_,
         'ret': ret_,
     }
 
-    return Executor(ns)
+    return Executor(variables)
 
 
 checks = [
