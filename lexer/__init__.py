@@ -35,7 +35,7 @@ class Lemma:
         return f"<Lemma:{self.source}:{self.line}:{self.pos} `{self.text}`>"
 
 
-LemmaT = Union[Lemma, "NameSpace"]
+Program = Union[Lemma, "NameSpace"]
 
 
 class NameSpace:
@@ -44,11 +44,11 @@ class NameSpace:
         '[': (list, ']'),
     }
 
-    def __init__(self, type_: str = None, lemmas: Sequence[LemmaT] = None):
+    def __init__(self, type_: str = None, lemmas: Sequence[Program] = None):
         self.type = None
         if type_:
             self.set_type(type_)
-        self.lemmas: List[LemmaT] = list(lemmas or [])
+        self.lemmas: List[Program] = list(lemmas or [])
 
     def append(self, item: Union[Lemma, "NameSpace"]):
         self.lemmas.append(item)

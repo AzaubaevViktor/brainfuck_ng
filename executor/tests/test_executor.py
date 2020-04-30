@@ -3,7 +3,7 @@ import operator
 import pytest
 
 from executor import Executor
-from lexer import Lemma
+from lexer import Lemma, do_lex
 
 
 @pytest.fixture(scope='function')
@@ -35,5 +35,6 @@ checks = [
 
 @pytest.mark.parametrize('programm, expected', checks)
 def test_executor(executor, programm, expected):
-    result = executor(programm)
+    lex_result = do_lex(programm)
+    result = executor(lex_result)
     assert expected == result
