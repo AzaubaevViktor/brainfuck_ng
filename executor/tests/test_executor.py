@@ -1,4 +1,5 @@
 import operator
+from typing import List
 
 import pytest
 
@@ -16,15 +17,22 @@ def executor():
     def ret_(calc, executor):
         return items
 
-    def defn(name: Lemma, arguments: list, commands: tuple, calc, executor: Executor):
-        sub = executor.sub()
-
+    def defn(name: Lemma, arguments: List[Lemma], commands: tuple, calc, executor: Executor):
         def new_func(*args, calc, executor: Executor):
-            assert len(arguments)
+            assert len(arguments) == len(args)
+
+            sub = executor.sub()
+
+            for arg_lemma, arg in zip(arguments, args):
+                sub.variables[arg_lemma.text] = calc(arg)
+
+            return sub(commands)
 
         new_func.__name__ = f"generated_{name.text}"
 
-        sub.variables[name.text] = None
+        executor.variables[name.text] = new_func
+
+        return defn
 
     def to_int(lemma: Lemma, calc, executor: Executor):
         return int(lemma.text)
@@ -53,7 +61,9 @@ checks = [
     ("(int -10)", -10),
     ("(int 1234)", 1234),
     ("(add (int 1) (int 2))", 3),
-    ("(defn test [a b] ( (add (int a) (int b)) )) (test (int 1) (int 2))", 3)
+    ("(defn test [a b] ( (add a b) )) (test (int 1) (int 2))", 3),
+    ("(defn test [a b] ( (add 1 a b) (add a b) )) (test (int 1) (int 2))", 3),
+    # TODO: Test to inherited variables in Executor
 ]
 
 
