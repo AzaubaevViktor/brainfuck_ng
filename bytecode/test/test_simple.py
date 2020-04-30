@@ -33,6 +33,15 @@ def test_simple(line, op_codes):
 @pytest.mark.parametrize(
     'line, op_codes', items
 )
+def test_simple_init(line, op_codes):
+    bc = ByteCode(line)
+
+    assert bc.items == op_codes
+
+
+@pytest.mark.parametrize(
+    'line, op_codes', items
+)
 def test_simple_by_pos(line, op_codes):
     bc = ByteCode()
 

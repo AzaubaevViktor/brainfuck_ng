@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 
 class ByteCodeError(Exception):
@@ -26,9 +26,12 @@ class ByteCode:
     CYCLE_START = 4
     CYCLE_STOP = 5
 
-    def __init__(self):
+    def __init__(self, prg: Optional[str] = None):
         self.items: List[Tuple[int, int]] = []
         self.cycle_stack = []
+
+        if prg:
+            self.__iadd__(prg)
 
     def __iadd__(self, other: str):
         for ch in other:
