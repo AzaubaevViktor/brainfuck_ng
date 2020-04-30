@@ -10,10 +10,10 @@ from lexer import Lemma, do_lex
 def executor():
     items = []
 
-    def append_(lemma: Lemma):
-        items.append(lemma.text)
+    def append_(lemma: Lemma, executor):
+        items.append((lemma.text, executor(lemma)))
 
-    def ret_():
+    def ret_(executor):
         return items
 
     variables = {
@@ -21,6 +21,8 @@ def executor():
         'add': operator.add,
         'append': append_,
         'ret': ret_,
+        'x': 'x_value',
+        'y': 'y_value',
     }
 
     return Executor(variables)
@@ -29,7 +31,7 @@ def executor():
 checks = [
     ("hello", "world"),
     ("add", operator.add),
-    ("(append x) (append  y) (ret)", ['x', 'y'])
+    ("(append x) (append  y) (ret)", [('x', 'x_value'), ('y', 'y_value')])
 ]
 
 

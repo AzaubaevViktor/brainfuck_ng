@@ -1,4 +1,4 @@
-from lexer import ProgramT, NameSpace, Lemma
+from lexer import ProgramT, Lemma
 
 
 class Executor:
@@ -9,12 +9,29 @@ class Executor:
         result = None
 
         for item in program:
-            if isinstance(item, tuple):
-                result = self._call(item)
-            elif isinstance(item, Lemma):
-                result = self.variables[item.text]
+            result = self._call_item(item)
 
         return result
 
-    def _call(self, program: tuple):
-        raise NotImplementedError()
+    def _call_item(self, item):
+        if isinstance(item, tuple):
+            return self._call_tuple(item)
+        elif isinstance(item, Lemma):
+            return self._call_lemma(item)
+
+        raise TypeError("Unknown type", type(item), item)
+
+    def _call_lemma(self, item):
+        return self.variables[item.text]
+
+    def sub(self) -> "Executor":
+        # Todo: inserted dicts
+        new_variables = self.variables
+
+        return Executor(new_variables)
+
+    def _call_tuple(self, program: tuple):
+        func = self._call_item(program[0])
+        args = program[1:]
+
+        return func(*args, executor=self._call_item)
