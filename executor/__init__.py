@@ -8,8 +8,11 @@ class Executor:
     def __call__(self, program: ProgramT):
         result = None
 
-        for item in program:
-            result = self._call_item(item)
+        if isinstance(program, Lemma):
+            result = self._call_lemma(program)
+        else:
+            for item in program:
+                result = self._call_item(item)
 
         return result
 

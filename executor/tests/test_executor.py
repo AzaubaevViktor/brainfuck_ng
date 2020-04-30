@@ -3,7 +3,7 @@ import operator
 import pytest
 
 from executor import Executor
-from lexer import Lemma, do_lex
+from lexer import Lemma, do_lex, NameSpace
 
 
 @pytest.fixture(scope='function')
@@ -16,13 +16,32 @@ def executor():
     def ret_(executor):
         return items
 
+    def defn(name: Lemma, arguments: list, commands: tuple, executor: Executor):
+        sub = executor.sub()
+
+        def new_func(*args, executor: Executor):
+            assert len(arguments)
+
+        new_func.__name__ = f"generated_{name.text}"
+
+        sub.variables[name.text] = None
+
+
+    def to_int(lemma: Lemma, executor: Executor):
+        return int(lemma.text)
+
+    def add(*lemmas: Lemma, executor: Executor):
+        return sum(executor(lemma) for lemma in lemmas)
+
     variables = {
         'hello': 'world',
-        'add': operator.add,
+        'add': add,
         'append': append_,
         'ret': ret_,
         'x': 'x_value',
         'y': 'y_value',
+        'int': to_int,
+        'defn': defn
     }
 
     return Executor(variables)
@@ -30,8 +49,12 @@ def executor():
 
 checks = [
     ("hello", "world"),
-    ("add", operator.add),
-    ("(append x) (append  y) (ret)", [('x', 'x_value'), ('y', 'y_value')])
+    ("(append x) (append  y) (ret)", [('x', 'x_value'), ('y', 'y_value')]),
+    ("(int 10)", 10),
+    ("(int -10)", -10),
+    ("(int 1234)", 1234),
+    ("(add (int 1) (int 2))", 3),
+    ("(defn test [a b] ( (add (int a) (int b)) )) (test (int 1) (int 2))", 3)
 ]
 
 
