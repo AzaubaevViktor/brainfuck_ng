@@ -18,7 +18,10 @@ checks = [
     ("(abcdef abcdef)", ("abcdef", "abcdef")),
     ("(print \"test\")", ("print", "\"test\"")),
     ("(print \"(lol man)\")", ("print", "\"(lol man)\"")),
-    ("(print \"Oh my... \\\" god\"", ("print", "\"Oh my... \\\" god\""))
+    ("(print \"Oh my... \\\" god\"", ("print", "\"Oh my... \\\" god\"")),
+    ("10", 10),
+    ("100000", 100000),
+    ("(add 10 20)", ('add', 10, 20)),
 ]
 
 
