@@ -1,49 +1,46 @@
-@import @
+(@let a 10)
+(@let b 0)
+(@let c 0)
+(@let d 0)
+(@let e 0)
 
-@let a
-@add a 10
+(@cycle a (
+    (@add b 7)
+    (@add c 10)
+    (@add d 3)
+    (@add c 1)
+    (@sub a 1)
+))
 
-@let b
-@let c
-@let d
-@let e
+(@add b 2)
+(@print b)
 
-@cycle a
-    @add b 7
-    @add c 10
-    @add d 3
-    @add c 1
-    @sub a 1
+(@add c 1)
+(@print c)
 
-@add b 2
-@print b
+(@add c 7)
+(@print c)
+(@print c)
 
-@add c 1
-@print c
+(@add c 3)
+(@print c)
 
-@add c 7
-@print c
-@print c
+(@add d 2)
+(@print d)
 
-@add c 3
-@print c
+(@add b 15)
+(@print b)
 
-@add d 2
-@print d
+(@print c)
 
-@add b 15
-@print b
+(@add d 3)
+(@print d)
 
-@print c
+(@sub d 6)
+(@print d)
 
-@add d 3
-@print d
+(@sub d 8)
+(@print d)
 
-@sub d 6
-@print d
-
-@sub d 8
-@print d
-
-@add e 1
-@print e
+(@add e 1)
+(@print e)

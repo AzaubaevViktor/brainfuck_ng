@@ -1,13 +1,11 @@
-let a
+(@let a 97)
 
-@add a 97
-@print a
+(@print a)
 
-@add a 1
-@print a
+(@add a 1)
+(@print a)
 
-@set a 97
-@print a
+(@set a 97)
+(@print a)
 
-
-# out: "aba"
+(@@out "aba")
