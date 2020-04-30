@@ -63,7 +63,7 @@ class NameSpace:
         assert self.types[self.type][1] == char
 
     def compile(self):
-        gen = (lemma.compile if isinstance(lemma, NameSpace) else lemma
+        gen = (lemma.compile() if isinstance(lemma, NameSpace) else lemma
                for lemma in self.lemmas)
 
         return self.types[self.type][0](gen)
@@ -96,17 +96,18 @@ def do_lex(source: Union[BaseSource, str]):
 
         current = ns_stack[-1]
 
-        if symbol in ('(', ']'):
+        if symbol in ('(', '['):
             if isinstance(current, Lemma):
                 raise NotImplementedError()
             else:
                 ns_stack.append(current.sub_ns(symbol))
         elif symbol in (')', ']'):
             if isinstance(current, Lemma):
-                raise NotImplementedError()
-            else:
-                current.check_type(symbol)
                 ns_stack.pop()
+                current = ns_stack[-1]
+
+            current.check_type(symbol)
+            ns_stack.pop()
         elif symbol in DIVIDERS:
             if isinstance(current, Lemma):
                 ns_stack.pop()
@@ -119,7 +120,6 @@ def do_lex(source: Union[BaseSource, str]):
                 ns_stack.append(current.append(Lemma(
                     source, symbol, line_num, pos_num
                 )))
-
 
     root_obj.check_type(')')
 

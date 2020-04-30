@@ -27,13 +27,16 @@ def check_correct(lexes, result, check: Callable[[Any, Any], bool]):
     for lex, res in zip(lexes, result):
         if isinstance(lex, tuple) and isinstance(result, tuple):
             assert check_correct(lex, res, check)
+        elif isinstance(lex, list) and isinstance(result, list):
+            assert check_correct(lex, res, check)
         else:
             assert check(lex, res)
 
     return True
 
 
-@pytest.mark.parametrize('source, expected', checks)
-def test_lexer(source, expected):
+@pytest.mark.parametrize('source, expected_into', checks)
+def test_lexer(source, expected_into):
+    expected = (expected_into, )
     result = do_lex(source)
     assert check_correct(result, expected, lambda lex, res: lex.text == res)
