@@ -3,7 +3,8 @@ from typing import List, Union
 import pytest
 
 from executor import Executor
-from lexer import Lemma, do_lex, NameSpace
+from executor.tests.module_for_test import Main
+from lexer import Lemma, do_lex
 
 
 @pytest.fixture(scope='function')
@@ -11,7 +12,7 @@ def executor():
     items = []
 
     def append_(lemma: Lemma, calc, executor):
-        items.append((lemma.text, calc(lemma)))
+        items.append((lemma.text if isinstance(lemma, Lemma) else type(lemma), calc(lemma)))
 
     def ret_(calc, executor):
         return items
@@ -50,6 +51,16 @@ def executor():
 
         executor.variables[var_name_] = value
 
+    modules = {
+        Main.NAME: Main
+    }
+
+    def _import(module_name: Lemma, calc, executor):
+        ModuleClass = modules[module_name.text]
+        module = ModuleClass(executor)
+        executor.variables.update(module())
+        return module
+
     variables = {
         'hello': 'world',
         'add': add,
@@ -60,6 +71,7 @@ def executor():
         'int': to_int,
         'defn': defn,
         'set': do_set,
+        'import': _import,
     }
 
     return Executor(variables)
@@ -84,8 +96,12 @@ checks = [
      "(append check)"
      "(test (int 2))"
      "(append check)"
-     "(ret)", [('check', 1), ('check', 1), ('check', 2), ('check', 1)])
-    # TODO: Test to inherited variables in Executor
+     "(ret)", [('check', 1), ('check', 1), ('check', 2), ('check', 1)]),
+    ("(import at)"
+     "(append some_text)"
+     "(append (some_method (int 2) (int 3)))"
+     "(ret)", [('some_text', Main.some_text), (tuple, 2 ** 3)]),
+    # TODO: Test for shutdown
 ]
 
 
