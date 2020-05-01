@@ -1,8 +1,7 @@
-from typing import Callable, Any
-
 import pytest
 
 from lexer import do_lex
+from lexer.tests.conftest import check_correct
 
 checks = [
     ("", None),
@@ -27,20 +26,6 @@ checks = [
     ("(f '1 plus '2)", ("f", "1", "plus", "2")),
     ("(f '1 [g '2] '3)", ("f", "1", ["g", "2"], "3")),
 ]
-
-
-def check_correct(lexes, result, check: Callable[[Any, Any], bool]):
-    assert len(lexes) == len(result)
-
-    for lex, res in zip(lexes, result):
-        if isinstance(lex, tuple) and isinstance(res, tuple):
-            assert check_correct(lex, res, check)
-        elif isinstance(lex, list) and isinstance(res, list):
-            assert check_correct(lex, res, check)
-        else:
-            assert check(lex, res)
-
-    return True
 
 
 @pytest.mark.parametrize('source, expected_into', checks)

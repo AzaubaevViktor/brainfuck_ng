@@ -2,46 +2,12 @@ import pytest
 
 from bytecode import ByteCode
 from interpreter import WrongPosition, Mem, Interpreter
+from interpreter.tests.conftest import debug_interpreter_step
 
 items_check_generator = [
     ("+>" * count, [1] * count + [0] * 1000)
     for count in range(int(Mem.CHUNK * 3.5))
 ]
-
-
-_debug_bc = {
-    ByteCode.MEM: '+',
-    ByteCode.POS: ">",
-    ByteCode.PRINT: ".",
-    ByteCode.READ: ",",
-    ByteCode.CYCLE_START: "[",
-    ByteCode.CYCLE_STOP: "]"
-}
-
-
-def _print_items(items, current, fmt='{{{}}}', fmt_item='{}'):
-    for index_, item_ in enumerate(items):
-        item = fmt_item.format(item_)
-
-        if index_ - 1 == current:
-            s = f" {item}"
-        elif index_ + 1 == current:
-            s = f"{item} "
-        elif index_ == current:
-            s = fmt.format(item)
-        else:
-            s = f" {item} "
-
-        print(s, end='')
-    print()
-
-
-def _debug(step: int, code: ByteCode, CP: int, mem: Mem, MP: int, out: str):
-    print(">>", step, f"CP: {CP}; MP: {MP}")
-
-    _print_items(code.items, CP, fmt_item="{0[0]}:{0[1]}")
-    _print_items(mem.data, MP, fmt_item="{:3}")
-    print(out)
 
 
 @pytest.mark.parametrize('prg, mem', (
@@ -63,7 +29,7 @@ def test_mem(prg, mem):
         with pytest.raises(mem):
             interpreter()
     else:
-        interpreter(debug=_debug)
+        interpreter(debug=debug_interpreter_step)
 
         for calc, expected in zip(interpreter.mem, mem):
             assert calc == expected
@@ -85,6 +51,6 @@ def test_out(prg, out):
     code = ByteCode(prg)
     interpreter = Interpreter(code)
 
-    interpreter(debug=_debug)
+    interpreter(debug=debug_interpreter_step)
 
     assert interpreter.out == out
