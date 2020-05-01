@@ -18,9 +18,12 @@ def executor():
         return items
 
     def defn(name: Lemma, arguments: List[Lemma], commands: tuple, calc, executor: Executor):
+        func_name = f"generated_{name.text}"
+
         def new_func(*args, calc, executor: Executor):
             # TODO: Wrong arguments Exception
-            assert len(arguments) == len(args)
+            if len(arguments) != len(args):
+                raise TypeError(f"For {func_name}:\nExpect {len(arguments)} argument, but {len(args)}:\n{args}")
 
             sub = executor.sub()
 
@@ -30,7 +33,7 @@ def executor():
 
             return sub(commands)
 
-        new_func.__name__ = f"generated_{name.text}"
+        new_func.__name__ = func_name
 
         executor.variables[name.text] = new_func
 
@@ -80,8 +83,9 @@ checks = [
      "    (append check)"
      "))"
      "(append check)"
-     "(test (int 2)"
-     "(ret)", [('check', 1), ('check', 2), ('check', 1)])
+     "(test (int 2))"
+     "(append check)"
+     "(ret)", [('check', 1), ('check', 1), ('check', 2), ('check', 1)])
     # TODO: Test to inherited variables in Executor
 ]
 
