@@ -1,6 +1,6 @@
 from typing import Union
 
-from lexer import ProgramT, Lemma
+from lexer import ExpressionT, Lemma
 
 """
 TODO: 
@@ -53,7 +53,7 @@ class Executor:
     def __init__(self, variables: VariablesT):
         self.variables = Variables(variables)
 
-    def __call__(self, program: ProgramT):
+    def __call__(self, program: ExpressionT):
         result = None
 
         if isinstance(program, Lemma):
