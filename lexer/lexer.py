@@ -4,6 +4,8 @@ from .sources import BaseSource, StringSource
 from .expr import LexerResultT, Expression
 from .lemma import Lemma
 
+DIVIDERS = ' \t\n'
+
 
 def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
     if isinstance(source, str):
@@ -54,6 +56,3 @@ def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
     root_obj.check_type(')')
 
     return root_obj.compile()
-
-
-DIVIDERS = ' \t\n'

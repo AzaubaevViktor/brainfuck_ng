@@ -42,5 +42,3 @@ class Expression:
 
     def sub_ns(self, type_first_char: str) -> "Expression":
         return self.append(Expression(type_first_char=type_first_char))
-
-
