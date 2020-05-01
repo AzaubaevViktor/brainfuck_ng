@@ -1,6 +1,6 @@
 from typing import Union
 
-from lexer import ExpressionT, Lemma
+from lexer import Lemma, ExpressionT
 
 """
 TODO: 
