@@ -1,3 +1,5 @@
+from typing import Union
+
 from lexer import ProgramT, Lemma
 
 """
@@ -20,9 +22,30 @@ Stack item:
 """
 
 
+VariablesT = Union[dict, "Variables"]
+
+
+class Variables:
+    def __init__(self, parent: VariablesT):
+        self.parent = parent
+        self.data = None
+
+    def __getitem__(self, item):
+        if self.data and item in self.data:
+            return self.data[item]
+        return self.parent[item]
+
+    def __setitem__(self, key, value):
+        if self.data is None:
+            self.data = {}
+
+        self.data[key] = value
+        return value
+
+
 class Executor:
-    def __init__(self, variables: dict):
-        self.variables = variables
+    def __init__(self, variables: VariablesT):
+        self.variables = Variables(variables)
 
     def __call__(self, program: ProgramT):
         result = None
@@ -48,10 +71,7 @@ class Executor:
         return self.variables[item.text]
 
     def sub(self) -> "Executor":
-        # Todo: inserted dicts
-        new_variables = self.variables
-
-        return Executor(new_variables)
+        return Executor(self.variables)
 
     def _call_tuple(self, program: tuple):
         func = self.calc(program[0])
