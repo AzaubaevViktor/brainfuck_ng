@@ -1,5 +1,5 @@
 import operator
-from typing import List
+from typing import List, Union
 
 import pytest
 
@@ -42,6 +42,12 @@ def executor():
     def add(*lemmas: Lemma, calc, executor: Executor):
         return sum(calc(lemma) for lemma in lemmas)
 
+    def do_set(var_name_: Lemma, value_: Union[tuple, Lemma], calc, executor: Executor):
+        value = calc(value_)
+        var_name_ = var_name_.text
+
+        executor.variables[var_name_] = value
+
     variables = {
         'hello': 'world',
         'add': add,
@@ -50,7 +56,8 @@ def executor():
         'x': 'x_value',
         'y': 'y_value',
         'int': to_int,
-        'defn': defn
+        'defn': defn,
+        'set': do_set,
     }
 
     return Executor(variables)
@@ -65,6 +72,16 @@ checks = [
     ("(add (int 1) (int 2))", 3),
     ("(defn test [a b] ( (add a b) )) (test (int 1) (int 2))", 3),
     ("(defn test [a b] ( (add (int 1) a b) (add a b) )) (test (int 1) (int 2))", 3),
+    ("(set new_var (int 1)) new_var", 1),
+    ("(set check (int 1))"
+     "(append check)"
+     "(defn test [a] ("
+     "    (set check a)"
+     "    (append check)"
+     "))"
+     "(append check)"
+     "(test (int 2)"
+     "(ret)", [('check', 1), ('check', 2), ('check', 1)])
     # TODO: Test to inherited variables in Executor
 ]
 
@@ -73,4 +90,5 @@ checks = [
 def test_executor(executor, programm, expected):
     lex_result = do_lex(programm)
     result = executor(lex_result)
+    print(result)
     assert expected == result
