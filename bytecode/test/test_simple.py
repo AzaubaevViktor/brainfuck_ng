@@ -1,6 +1,6 @@
 import pytest
 
-from bytecode import ByteCode, ByteCodeError, MissingOpenCycle, WrongChar
+from bytecode import ByteCode, MissingOpenCycle, WrongChar
 
 items = (
     ("+++", [(ByteCode.MEM, 3)]),
