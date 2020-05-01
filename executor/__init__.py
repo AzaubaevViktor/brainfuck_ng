@@ -42,6 +42,12 @@ class Variables:
         self.data[key] = value
         return value
 
+    def update(self, new_data, **kwargs):
+        if self.data is None:
+            self.data = {}
+        self.data.update(new_data)
+        self.data.update(kwargs)
+
 
 class Executor:
     def __init__(self, variables: VariablesT):
