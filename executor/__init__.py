@@ -71,8 +71,6 @@ class Executor:
             return self._call_tuple(item)
         elif isinstance(item, Lemma):
             return self._call_lemma(item)
-        elif isinstance(item, tuple):
-            return self._call_tuple(item)
 
         raise TypeError("Unknown type", type(item), item)
 
