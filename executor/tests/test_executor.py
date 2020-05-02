@@ -51,7 +51,8 @@ checks = [
      "(append (some_method (int 2) (int 3)))"
      "(ret)", [('some_text', Main.some_text), (tuple, 2 ** 3)]),
     # TODO: Test for module shutdown
-    ('[a b]', ['a', 'b']),
+    ('[1 2 3]', [1, 2, 3]),
+    ('[1 2 "x" (add 5 10) ((op pow) 2 3)]', [1, 2, 'x', 15, 8]),
     ('((op pow) (int 2) (int 3))', 8),
     ('((op pow) 2 3)', 8),
     *string_values_tests,

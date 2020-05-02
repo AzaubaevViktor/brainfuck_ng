@@ -61,6 +61,8 @@ class Executor:
                 result = self._call_tuple(item)
             elif isinstance(item, Lemma):
                 result = self._call_lemma(item)
+            elif isinstance(item, list):
+                result = [self(list_item) for list_item in item]
             else:
                 raise TypeError("Unknown type", type(item), item)
 
