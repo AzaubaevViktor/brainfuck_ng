@@ -66,9 +66,18 @@ class Executor:
 
         return result
 
-    def _call_lemma(self, item):
+    def _call_lemma(self, lemma: Lemma):
         # TODO: Unknown variable Exception
-        return self.variables[item.text]
+        if (value := self._check_int(lemma)):
+            return value
+
+        return self.variables[lemma.text]
+
+    def _check_int(self, lemma: Lemma):
+        try:
+            return int(lemma.text)
+        except ValueError:
+            return None
 
     def _call_tuple(self, program: tuple):
         func = self(program[0])

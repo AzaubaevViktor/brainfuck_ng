@@ -6,6 +6,7 @@ from lexer import do_lex
 checks = [
     ("hello", "world"),
     ("(append x) (append  y) (ret)", [('x', 'x_value'), ('y', 'y_value')]),
+    ("10", 10),
     ("(int 10)", 10),
     ("(int -10)", -10),
     ("(int 1234)", 1234),
@@ -29,7 +30,8 @@ checks = [
      "(ret)", [('some_text', Main.some_text), (tuple, 2 ** 3)]),
     # TODO: Test for module shutdown
     ('[a b]', ['a', 'b']),
-    ('((op pow) (int 2) (int 3))', 8)
+    ('((op pow) (int 2) (int 3))', 8),
+    ('((op pow) 2 3)', 8),
 ]
 
 
