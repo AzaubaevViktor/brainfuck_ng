@@ -15,9 +15,9 @@ checks = [
     ("(a [b c])", ('a', ['b', 'c'])),
     ("((a b) (c d (e f))", (('a', 'b'), ('c', 'd', ('e', 'f')))),
     ("(abcdef abcdef)", ("abcdef", "abcdef")),
-    ("(print \"test\")", ("print", "\"test\"")),
-    ("(print \"(lol man)\")", ("print", "\"(lol man)\"")),
-    ("(print \"Oh my... \\\" god\"", ("print", "\"Oh my... \\\" god\"")),
+    ("(print \"test\")", ("print", "test")),
+    ("(print \"(lol man)\")", ("print", "(lol man)")),
+    ("(print \"Oh my... \\\" god\"", ("print", "Oh my... \" god")),
 ]
 
 
