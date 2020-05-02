@@ -8,51 +8,62 @@ DIVIDERS = ' \t\n'
 
 
 def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
-    if isinstance(source, str):
-        source = StringSource(source)
+    lexer = _Lexer(source)
 
-    root_obj = Expression()
-    root_obj.set_type('(')
+    return lexer()
 
-    ns_stack = [root_obj]
+class _Lexer:
+    def __init__(self, source: Union[BaseSource, str]):
+        if isinstance(source, str):
+            source = StringSource(source)
 
-    line_num = 0
-    pos_num = 0
+        self.source = source
 
-    for symbol in source:
-        if symbol == '\n':
-            line_num += 1
-            pos_num = 0
+        self.root_obj = Expression(type_first_char='(')
 
-        pos_num += 1
+        self.ns_stack = [self.root_obj]
 
-        current = ns_stack[-1]
+        self.line_num = 0
+        self.pos_num = 0
 
+    def __call__(self):
+        for symbol in self.source:
+            if symbol == '\n':
+                self.line_num += 1
+                self.pos_num = 0
+
+            self.pos_num += 1
+
+            current = self.ns_stack[-1]
+
+            self._default_mode(current, symbol)
+
+        self.root_obj.check_type(')')
+
+        return self.root_obj.compile()
+
+    def _default_mode(self, current, symbol):
         if symbol in ('(', '['):
             if isinstance(current, Lemma):
                 raise NotImplementedError()
             else:
-                ns_stack.append(current.sub_ns(symbol))
+                self.ns_stack.append(current.sub_ns(symbol))
         elif symbol in (')', ']'):
             if isinstance(current, Lemma):
-                ns_stack.pop()
-                current = ns_stack[-1]
+                self.ns_stack.pop()
+                current = self.ns_stack[-1]
 
             current.check_type(symbol)
-            ns_stack.pop()
+            self.ns_stack.pop()
         elif symbol in DIVIDERS:
             if isinstance(current, Lemma):
-                ns_stack.pop()
+                self.ns_stack.pop()
             else:
                 pass
         else:
             if isinstance(current, Lemma):
                 current.append(symbol)
             else:
-                ns_stack.append(current.append(Lemma(
-                    source, symbol, line_num, pos_num
+                self.ns_stack.append(current.append(Lemma(
+                    self.source, symbol, self.line_num, self.pos_num
                 )))
-
-    root_obj.check_type(')')
-
-    return root_obj.compile()
