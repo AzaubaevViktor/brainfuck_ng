@@ -53,11 +53,15 @@ def test_example(file_name):
 
         out_check += text.text
 
+    def do_add(*values: LexerResultT, executor):
+        return sum(map(executor, values))
+
     variables = {
         '@add': hbf_add,
         '@print': hbf_print,
         '@@mem': hbf_check_mem,
         '@@out': hbf_check_out,
+        "+": do_add,
     }
 
     executor = Executor(variables)
