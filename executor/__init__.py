@@ -53,26 +53,18 @@ class Executor:
     def __init__(self, variables: VariablesT):
         self.variables = Variables(variables)
 
-    def __call__(self, program: LexerResultT):
+    def __call__(self, *program: LexerResultT):
         result = None
 
-        if isinstance(program, Lemma):
-            result = self._call_lemma(program)
-        elif isinstance(program, tuple):
-            for item in program:
-                result = self.calc(item)
-        else:
-            raise NotImplementedError()
+        for item in program:
+            if isinstance(item, tuple):
+                result = self._call_tuple(item)
+            elif isinstance(item, Lemma):
+                result = self._call_lemma(item)
+            else:
+                raise TypeError("Unknown type", type(item), item)
 
         return result
-
-    def calc(self, item):
-        if isinstance(item, tuple):
-            return self._call_tuple(item)
-        elif isinstance(item, Lemma):
-            return self._call_lemma(item)
-
-        raise TypeError("Unknown type", type(item), item)
 
     def _call_lemma(self, item):
         # TODO: Unknown variable Exception
@@ -82,8 +74,8 @@ class Executor:
         return Executor(self.variables)
 
     def _call_tuple(self, program: tuple):
-        func = self.calc(program[0])
+        func = self(program[0])
         args = program[1:]
 
         # TODO: Exception wrapper for function
-        return func(*args, calc=self.calc, executor=self)
+        return func(*args, calc=self, executor=self)

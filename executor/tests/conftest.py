@@ -31,7 +31,7 @@ def executor():
                 # TODO: Error while argument calculation Exception
                 sub.variables[arg_lemma.text] = calc(arg)
 
-            return sub(commands)
+            return sub(*commands)
 
         new_func.__name__ = func_name
 

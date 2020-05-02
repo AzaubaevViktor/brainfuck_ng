@@ -36,6 +36,6 @@ checks = [
 @pytest.mark.parametrize('programm, expected', checks)
 def test_executor(executor, programm, expected):
     lex_result = do_lex(programm)
-    result = executor(lex_result)
+    result = executor(*lex_result)
     print(result)
     assert expected == result
