@@ -9,7 +9,7 @@ Interactive mode
 """
 import sys
 from traceback import print_exc
-from typing import Union
+from typing import Union, List
 
 from executor import Executor
 from lexer import LexerResultT, Lemma, do_lex
@@ -68,6 +68,29 @@ def _do_exit(executor):
     exit()
 
 
+def defn(name: Lemma, arguments: List[Lemma], commands: tuple, executor: Executor):
+    func_name = f"generated_{name.text}"
+
+    def new_func(*args, executor: Executor):
+        # TODO: Wrong arguments Exception
+        if len(arguments) != len(args):
+            raise TypeError(f"For {func_name}:\nExpect {len(arguments)} argument, but {len(args)}:\n{args}")
+
+        sub = executor.sub()
+
+        for arg_lemma, arg in zip(arguments, args):
+            # TODO: Error while argument calculation Exception
+            sub.variables[arg_lemma.text] = executor(arg)
+
+        return sub(*commands)
+
+    new_func.__name__ = func_name
+
+    executor.variables[name.text] = new_func
+
+    return new_func
+
+
 variables = {
     'about': "REPL v0",
     'version': 0,
@@ -80,6 +103,7 @@ variables = {
     'exit': _do_exit,
     '=': do_set,
     "print": _print,
+    'defn': defn
 }
 
 
