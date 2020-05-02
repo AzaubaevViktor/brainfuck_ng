@@ -78,6 +78,14 @@ class _Lexer:
                 )))
 
     def _string_mode(self, current: StringLemma, symbol: str):
+        if current.escaping:
+            current.process_escape(symbol)
+            return
+
+        if symbol == '\\':
+            current.escaping = True
+            return
+
         if symbol in STRING_END:  # TODO: and not escape
             current.finished = True
             self.ns_stack.pop()

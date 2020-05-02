@@ -16,6 +16,19 @@ class Lemma:
 
 
 class StringLemma(Lemma):
+    ECSAPES = {
+        'n': '\n',
+        't': '\t',
+        '\\': '\\\\',
+        '"': '"'
+    }
+
     def __init__(self, source: BaseSource, text: str, line: int, pos: int):
         super().__init__(source, text, line, pos)
         self.finished = False
+        self.escaping = False
+
+    def process_escape(self, char: str) -> str:
+        self.escaping = False
+        self.text += self.ECSAPES[char]
+
