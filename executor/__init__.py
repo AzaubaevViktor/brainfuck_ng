@@ -78,4 +78,4 @@ class Executor:
         args = program[1:]
 
         # TODO: Exception wrapper for function
-        return func(*args, calc=self, executor=self)
+        return func(*args, executor=self)

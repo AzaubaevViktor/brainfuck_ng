@@ -12,8 +12,8 @@ class Main:
             'some_method': self._power
         }
 
-    def _power(self, a, b, calc, executor):
-        return calc(a) ** calc(b)
+    def _power(self, a, b, executor):
+        return executor(a) ** executor(b)
 
     def shutdown(self):
         pass
