@@ -15,3 +15,18 @@ class StringSource:
 
     def __repr__(self):
         return f"<StrSource({len(self.data)})>"
+
+
+class FileSource:
+    CHUNK = 1024
+
+    def __init__(self, file_name: str):
+        self.file_name = file_name
+
+    def __iter__(self):
+        with open(self.file_name, "rt") as f:
+            while data := f.read(self.CHUNK):
+                yield from data
+
+    def __repr__(self):
+        return f"<FileSource:{self.file_name}>"
