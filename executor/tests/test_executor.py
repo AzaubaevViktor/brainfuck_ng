@@ -1,7 +1,29 @@
 import pytest
 
 from executor.tests.module_for_test import Main
-from lexer import do_lex
+from lexer import do_lex, DIVIDERS
+
+_dividers_raw = repr(DIVIDERS)[1:-1]
+
+string_values_tests = [
+    (f'(= test "{s}")'
+     '(append test)'
+     '(ret)', [('test', s)])
+    for s in (
+        "test",
+        "a a a ",
+        "( ha () ha ) ha ) ha )",
+        "corova linux: 🦠",
+        "💀\t🔥♷"
+    )
+]
+
+dividers_tests = [
+    (f"(= dividers \"{_dividers_raw}\")"
+     f"(append ((op getitem) dividers {index}))"
+     f"(ret)", [(None, DIVIDERS[index])])
+    for index in range(len(DIVIDERS))
+]
 
 checks = [
     ("hello", "world"),
@@ -32,6 +54,12 @@ checks = [
     ('[a b]', ['a', 'b']),
     ('((op pow) (int 2) (int 3))', 8),
     ('((op pow) 2 3)', 8),
+    *string_values_tests,
+    ('(append ((op add) "a" "b"))'
+     '(ret)', [(None, "ab")]),
+    ('(= check ((op getitem) "abcde" 2))'
+     '(append check) (ret)', [('check', 'c')]),
+    *dividers_tests
 ]
 
 

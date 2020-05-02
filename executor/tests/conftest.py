@@ -82,6 +82,7 @@ def executor():
         'int': to_int,
         'defn': defn,
         'set': do_set,
+        '=': do_set,
         'import': _import,
         'op': get_operator,
     }
