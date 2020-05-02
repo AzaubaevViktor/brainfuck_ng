@@ -12,4 +12,10 @@ class Lemma:
         self.text += ch
 
     def __repr__(self):
-        return f"<Lemma:{self.source}:{self.line}:{self.pos} `{self.text}`>"
+        return f"<{self.__class__.__name__}:{self.source}:{self.line}:{self.pos} `{self.text}`>"
+
+
+class StringLemma(Lemma):
+    def __init__(self, source: BaseSource, text: str, line: int, pos: int):
+        super().__init__(source, text, line, pos)
+        self.finished = False

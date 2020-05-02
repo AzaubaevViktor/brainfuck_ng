@@ -1,10 +1,12 @@
-from typing import Union
+from typing import Union, List
 
 from .sources import BaseSource, StringSource
-from .expr import LexerResultT, Expression
-from .lemma import Lemma
+from .expr import LexerResultT, Expression, ExpressionT
+from .lemma import Lemma, StringLemma
 
 DIVIDERS = ' \t\n'
+STRING_START = '\"'
+STRING_END = '\"'
 
 
 def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
@@ -21,7 +23,7 @@ class _Lexer:
 
         self.root_obj = Expression(type_first_char='(')
 
-        self.ns_stack = [self.root_obj]
+        self.ns_stack: List[ExpressionT] = [self.root_obj]
 
         self.line_num = 0
         self.pos_num = 0
@@ -36,7 +38,10 @@ class _Lexer:
 
             current = self.ns_stack[-1]
 
-            self._default_mode(current, symbol)
+            if isinstance(current, StringLemma) and not current.finished:
+                self._string_mode(current, symbol)
+            else:
+                self._default_mode(current, symbol)
 
         self.root_obj.check_type(')')
 
@@ -60,6 +65,10 @@ class _Lexer:
                 self.ns_stack.pop()
             else:
                 pass
+        elif symbol in STRING_START:
+            self.ns_stack.append(current.append(StringLemma(
+                self.source, "", self.line_num, self.pos_num
+            )))
         else:
             if isinstance(current, Lemma):
                 current.append(symbol)
@@ -67,3 +76,11 @@ class _Lexer:
                 self.ns_stack.append(current.append(Lemma(
                     self.source, symbol, self.line_num, self.pos_num
                 )))
+
+    def _string_mode(self, current: StringLemma, symbol: str):
+        if symbol in STRING_END:  # TODO: and not escape
+            current.finished = True
+            self.ns_stack.pop()
+            return
+
+        current.text += symbol
