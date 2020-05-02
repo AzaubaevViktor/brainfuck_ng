@@ -56,7 +56,7 @@ checks = [
     ('((op pow) 2 3)', 8),
     *string_values_tests,
     ('(append ((op add) "a" "b"))'
-     '(ret)', [(None, "ab")]),
+     '(ret)', [(tuple, "ab")]),
     ('(= check ((op getitem) "abcde" 2))'
      '(append check) (ret)', [('check', 'c')]),
     *dividers_tests

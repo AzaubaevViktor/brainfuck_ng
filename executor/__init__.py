@@ -1,6 +1,6 @@
 from typing import Union
 
-from lexer import Lemma, ExpressionT, LexerResultT
+from lexer import Lemma, ExpressionT, LexerResultT, StringLemma
 
 """
 TODO: 
@@ -68,6 +68,9 @@ class Executor:
 
     def _call_lemma(self, lemma: Lemma):
         # TODO: Unknown variable Exception
+        if isinstance(lemma, StringLemma):
+            return lemma.text
+
         if (value := self._check_int(lemma)):
             return value
 
