@@ -73,7 +73,7 @@ class Executor:
         if isinstance(lemma, StringLemma):
             return lemma.text
 
-        if (value := self._check_int(lemma)):
+        if (value := self._check_int(lemma)) is not None:
             return value
 
         return self.variables[lemma.text]

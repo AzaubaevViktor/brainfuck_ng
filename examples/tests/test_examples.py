@@ -38,6 +38,20 @@ def test_example(file_name):
         result += "<" * addr
         return result
 
+    def hbf_cycle(addr_: Lemma, commands: LexerResultT, executor):
+        addr = _parse_addr(addr_)
+        result = ">" * addr
+        result += "["
+        result += "<" * addr
+
+        for item in commands:
+            result += executor(item)
+
+        result += ">" * addr
+        result += "]"
+        result += "<" * addr
+        return result
+
     def hbf_check_mem(addr_: Lemma, value_: LexerResultT, executor):
         addr = _parse_addr(addr_)
         value = executor(value_)
@@ -59,6 +73,7 @@ def test_example(file_name):
     variables = {
         '@add': hbf_add,
         '@print': hbf_print,
+        "@cycle": hbf_cycle,
         '@@mem': hbf_check_mem,
         '@@out': hbf_check_out,
         "+": do_add,
