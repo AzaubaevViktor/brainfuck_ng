@@ -70,12 +70,12 @@ class Executor:
         # TODO: Unknown variable Exception
         return self.variables[item.text]
 
-    def sub(self) -> "Executor":
-        return Executor(self.variables)
-
     def _call_tuple(self, program: tuple):
         func = self(program[0])
         args = program[1:]
 
         # TODO: Exception wrapper for function
         return func(*args, executor=self)
+
+    def sub(self) -> "Executor":
+        return Executor(self.variables)
