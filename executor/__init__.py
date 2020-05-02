@@ -1,6 +1,6 @@
 from typing import Union
 
-from lexer import Lemma, ExpressionT
+from lexer import Lemma, ExpressionT, LexerResultT
 
 """
 TODO: 
@@ -53,14 +53,16 @@ class Executor:
     def __init__(self, variables: VariablesT):
         self.variables = Variables(variables)
 
-    def __call__(self, program: ExpressionT):
+    def __call__(self, program: LexerResultT):
         result = None
 
         if isinstance(program, Lemma):
             result = self._call_lemma(program)
-        else:
+        elif isinstance(program, tuple):
             for item in program:
                 result = self.calc(item)
+        else:
+            raise NotImplementedError()
 
         return result
 
@@ -69,6 +71,8 @@ class Executor:
             return self._call_tuple(item)
         elif isinstance(item, Lemma):
             return self._call_lemma(item)
+        elif isinstance(item, tuple):
+            return self._call_tuple(item)
 
         raise TypeError("Unknown type", type(item), item)
 

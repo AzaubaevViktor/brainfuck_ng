@@ -27,7 +27,9 @@ checks = [
      "(append some_text)"
      "(append (some_method (int 2) (int 3)))"
      "(ret)", [('some_text', Main.some_text), (tuple, 2 ** 3)]),
-    # TODO: Test for shutdown
+    # TODO: Test for module shutdown
+    ('[a b]', ['a', 'b']),
+    ('((op pow) (int 2) (int 3))', 8)
 ]
 
 

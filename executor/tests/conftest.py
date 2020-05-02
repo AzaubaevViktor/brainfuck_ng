@@ -4,7 +4,7 @@ import pytest
 
 from executor import Executor
 from executor.tests.module_for_test import Main
-from lexer import Lemma
+from lexer import Lemma, LexerResultT
 
 
 @pytest.fixture(scope='function')
@@ -61,6 +61,17 @@ def executor():
         executor.variables.update(module())
         return module
 
+    def get_operator(op_name: Lemma, calc, executor):
+        import operator
+        op_func = getattr(operator, op_name.text)
+
+        def wrapper_op(*raw_args: LexerResultT, calc, executor):
+            args = map(calc, raw_args)
+            return op_func(*args)
+
+        wrapper_op.__name__ = f"wrapper_{op_func.__name__}"
+        return wrapper_op
+
     variables = {
         'hello': 'world',
         'add': add,
@@ -72,6 +83,7 @@ def executor():
         'defn': defn,
         'set': do_set,
         'import': _import,
+        'op': get_operator,
     }
 
     return Executor(variables)
