@@ -1,5 +1,6 @@
 from typing import Union, List
 
+from . import LexerError
 from .sources import BaseSource, StringSource
 from .expr import LexerResultT, Expression, ExpressionT
 from .lemma import Lemma, StringLemma
@@ -13,6 +14,7 @@ def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
     lexer = _Lexer(source)
 
     return lexer()
+
 
 class _Lexer:
     def __init__(self, source: Union[BaseSource, str]):
@@ -42,6 +44,9 @@ class _Lexer:
                 self._string_mode(current, symbol)
             else:
                 self._default_mode(current, symbol)
+
+        if len(self.ns_stack) != 1:
+            raise LexerError()
 
         self.root_obj.check_type(')')
 

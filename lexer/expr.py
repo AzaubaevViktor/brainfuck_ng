@@ -30,7 +30,9 @@ class Expression:
         self.type = type_first_char
 
     def check_type(self, type_last_char):
-        assert self.types[self.type][1] == type_last_char
+        expected_last_char = self.types[self.type][1]
+        if expected_last_char != type_last_char:
+            raise LexerError(f"Expect {expected_last_char} instead {type_last_char}")
 
     def compile(self) -> LexerResultT:
         return self._apply_type()
