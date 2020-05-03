@@ -11,7 +11,7 @@ import sys
 from traceback import print_exc
 from typing import Union, List
 
-from executor import Executor
+from executor import Executor, ExecutorError
 from lexer import LexerResultT, Lemma, do_lex
 
 
@@ -103,7 +103,10 @@ variables = {
     'exit': _do_exit,
     '=': do_set,
     "print": _print,
-    'defn': defn
+    'defn': defn,
+    'debug': True,
+    'True': True,
+    'False': False
 }
 
 
@@ -119,6 +122,8 @@ _init = """
 
 (print "Now you can use `@exec` and `@vars`")
 (print "Enjoy!")
+(print "To disable debug output use:")
+(print "(= debug False)")
 """
 
 executor(*do_lex(_init))
@@ -131,8 +136,11 @@ if __name__ == '__main__':
         s = input("~~> ")
         try:
             lex_result = do_lex(s)
-            print(lex_result)
+            if executor.variables.get('debug', True):
+                print(lex_result)
             print(executor(*lex_result))
+        except ExecutorError as e:
+            print(e.pretty())
         except:
             print_exc()
         finally:

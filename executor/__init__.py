@@ -57,6 +57,11 @@ class Variables:
 
         return False
 
+    def get(self, item, default=None):
+        if item in self:
+            return self[item]
+        return default
+
     def update(self, new_data, **kwargs):
         if self.data is None:
             self.data = {}
