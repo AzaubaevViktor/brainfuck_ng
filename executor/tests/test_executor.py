@@ -22,7 +22,7 @@ string_values_tests = [
 dividers_tests = [
     (f"(= dividers \"{_dividers_raw}\")"
      f"(append ((op getitem) dividers {index}))"
-     f"(ret)", [(None, DIVIDERS[index])])
+     f"(ret)", [(tuple, DIVIDERS[index])])
     for index in range(len(DIVIDERS))
 ]
 
