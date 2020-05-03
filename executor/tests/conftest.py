@@ -2,7 +2,7 @@ from typing import List, Union
 
 import pytest
 
-from executor import Executor
+from executor import Executor, ExecutorError
 from executor.tests.module_for_test import Main
 from lexer import Lemma, LexerResultT
 
@@ -20,16 +20,23 @@ def executor():
     def defn(name: Lemma, arguments: List[Lemma], commands: tuple, executor: Executor):
         func_name = f"generated_{name.text}"
 
+        argument_names = [arg.text for arg in arguments]
+
         def new_func(*args, executor: Executor):
             # TODO: Wrong arguments Exception
-            if len(arguments) != len(args):
-                raise TypeError(f"For {func_name}:\nExpect {len(arguments)} argument, but {len(args)}:\n{args}")
+
+            if len(argument_names) > len(args):
+                expected_argument = argument_names[len(args)]
+                raise ExecutorError(f"{func_name}: Expect argument {expected_argument}")
+
+            if len(argument_names) < len(args):
+                raise ExecutorError(f"{func_name}: Too many arguments (expect {len(argument_names)})")
 
             sub = executor.sub()
 
-            for arg_lemma, arg in zip(arguments, args):
+            for arg_name, arg in zip(argument_names, args):
                 # TODO: Error while argument calculation Exception
-                sub.variables[arg_lemma.text] = executor(arg)
+                sub.variables[arg_name] = executor(arg)
 
             return sub(*commands)
 

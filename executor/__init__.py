@@ -48,6 +48,15 @@ class Variables:
         self.data[key] = value
         return value
 
+    def __contains__(self, item):
+        if self.data and item in self.data:
+            return True
+
+        if item in self.parent:
+            return True
+
+        return False
+
     def update(self, new_data, **kwargs):
         if self.data is None:
             self.data = {}

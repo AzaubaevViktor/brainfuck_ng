@@ -79,10 +79,11 @@ wrongs = [
     ("(defn func_name [arg1 arg2] ())"
      "(func_name 12)", ["func_name"], ("func_name", "arg2", "expect", "argument")),
     ("(defn func_name [arg1] ())"
-     "(func_name 12 12)", ["func_name"], ("too many", "arg1")),
+     "(func_name 12 12)", ["func_name"], ("too many", "expect 1")),
     ("(defn func_name [arg1] ("
      "   (add 10 unk_nown)"
-     "))", ["func_name", 'add'], ("unk_nown", "not found", "term"))
+     "))"
+     "(func_name 10)", ["func_name", 'add', 'unk_nown'], ("unk_nown", "not found", "term"))
 ]
 
 
