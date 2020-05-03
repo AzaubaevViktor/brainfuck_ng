@@ -13,7 +13,7 @@ checks = [
     ("(a \nb    \n c\n\n\n\n)\n", ('a', 'b', 'c')),
     ("(a (b c))", ('a', ('b', 'c'))),
     ("(a [b c])", ('a', ['b', 'c'])),
-    ("((a b) (c d (e f))", (('a', 'b'), ('c', 'd', ('e', 'f')))),
+    ("((a b) (c d (e f)))", (('a', 'b'), ('c', 'd', ('e', 'f')))),
     ("(abcdef abcdef)", ("abcdef", "abcdef")),
     ("(print \"test\")", ("print", "test")),
     ("(print \"(lol man)\")", ("print", "(lol man)")),

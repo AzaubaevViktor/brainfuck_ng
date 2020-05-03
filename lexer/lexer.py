@@ -45,8 +45,11 @@ class _Lexer:
             else:
                 self._default_mode(current, symbol)
 
+        while self.ns_stack and isinstance(self.ns_stack[-1], Lemma):
+            self.ns_stack.pop()
+
         if len(self.ns_stack) != 1:
-            raise LexerError()
+            raise LexerError(self.ns_stack)
 
         self.root_obj.check_type(')')
 

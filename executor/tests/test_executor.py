@@ -1,5 +1,6 @@
 import pytest
 
+from executor.exc import ExecutorError
 from executor.tests.module_for_test import Main
 from lexer import do_lex, DIVIDERS
 
@@ -70,3 +71,31 @@ def test_executor(executor, programm, expected):
     result = executor(*lex_result)
     print(result)
     assert expected == result
+
+
+wrongs = [
+    ("un_kn", [("un_kn", "unknown", "variable")]),
+    ("(add un_nk 1)", ["add", ("un_kn", "unknown", "variable")]),
+    ("(defn func_name [arg1 arg2] ())"
+     "(func_name 12)", [("func_name", "arg2")]),
+    ("(defn func_name [arg1] ())"
+     "(func_name 12 12)", [("func_name", "too many", "arg1")]),
+    ("(defn func_name [arg1] ("
+     "   (add 10 unk_nown)"
+     "))", ["func_name", 'add', "unk_nown"])
+]
+
+
+@pytest.mark.parametrize('program, stack', wrongs)
+def test_wrong_input(executor, program, stack):
+    lex_result = do_lex(program)
+    with pytest.raises(ExecutorError) as exc_info:
+        executor(*lex_result)
+
+    e: ExecutorError = exc_info.value
+    for expected, stack_frame in zip(stack, e.stack_frames):
+        if not isinstance(expected, tuple):
+            expected = (expected, )
+
+        for item in expected:
+            assert item in str(stack_frame)
