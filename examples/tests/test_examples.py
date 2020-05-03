@@ -3,7 +3,7 @@ import os
 import pytest
 
 from bytecode import ByteCode
-from executor import Executor
+from executor import Executor, ExecutorError
 from interpreter import Interpreter
 from lexer import FileSource, do_lex, Lemma, LexerResultT, StringLemma
 
@@ -84,10 +84,14 @@ def test_example(file_name):
     source = FileSource(file_name)
     lex_result = do_lex(source)
 
-    results = [
-        executor(item)
-        for item in lex_result
-    ]
+    try:
+        results = [
+            executor(item)
+            for item in lex_result
+        ]
+    except ExecutorError as e:
+        print(e.pretty())
+        raise
 
     program_raw = "".join(item for item in results if item)
     print(program_raw)
