@@ -1,6 +1,8 @@
 from typing import Union
 
-from lexer import Lemma, ExpressionT, LexerResultT, StringLemma
+from lexer import Lemma, LexerResultT, StringLemma
+
+from .exc import ExecutorError, ErrorStackFrame
 
 """
 TODO: 
@@ -30,9 +32,13 @@ class Variables:
         self.parent = parent
         self.data = None
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: str):
         if self.data and item in self.data:
             return self.data[item]
+
+        if item not in self.parent:
+            raise ExecutorError(f'Term {item} not found in this scope')
+
         return self.parent[item]
 
     def __setitem__(self, key, value):
@@ -57,19 +63,22 @@ class Executor:
         result = None
 
         for item in program:
-            if isinstance(item, tuple):
-                result = self._call_tuple(item)
-            elif isinstance(item, Lemma):
-                result = self._call_lemma(item)
-            elif isinstance(item, list):
-                result = [self(list_item) for list_item in item]
-            else:
-                raise TypeError("Unknown type", type(item), item)
+            try:
+                if isinstance(item, tuple):
+                    result = self._call_tuple(item)
+                elif isinstance(item, Lemma):
+                    result = self._call_lemma(item)
+                elif isinstance(item, list):
+                    result = [self(list_item) for list_item in item]
+                else:
+                    raise TypeError("Unknown type", type(item), item)
+            except ExecutorError as e:
+                e.append(ErrorStackFrame(item))
+                raise
 
         return result
 
     def _call_lemma(self, lemma: Lemma):
-        # TODO: Unknown variable Exception
         if isinstance(lemma, StringLemma):
             return lemma.text
 

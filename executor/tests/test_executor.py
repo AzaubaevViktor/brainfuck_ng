@@ -74,28 +74,43 @@ def test_executor(executor, programm, expected):
 
 
 wrongs = [
-    ("un_kn", [("un_kn", "unknown", "variable")]),
-    ("(add un_nk 1)", ["add", ("un_kn", "unknown", "variable")]),
+    ("un_kn", ["un_kn"], ("term", "not found", "un_kn")),
+    ("(add un_kn 1)", ["add", "un_kn"], ("un_kn", "not found", "term")),
     ("(defn func_name [arg1 arg2] ())"
-     "(func_name 12)", [("func_name", "arg2")]),
+     "(func_name 12)", ["func_name"], ("func_name", "arg2", "expect", "argument")),
     ("(defn func_name [arg1] ())"
-     "(func_name 12 12)", [("func_name", "too many", "arg1")]),
+     "(func_name 12 12)", ["func_name"], ("too many", "arg1")),
     ("(defn func_name [arg1] ("
      "   (add 10 unk_nown)"
-     "))", ["func_name", 'add', "unk_nown"])
+     "))", ["func_name", 'add'], ("unk_nown", "not found", "term"))
 ]
 
 
-@pytest.mark.parametrize('program, stack', wrongs)
-def test_wrong_input(executor, program, stack):
+@pytest.mark.parametrize('program, stack, msg', wrongs)
+def test_wrong_input(executor, program, stack, msg):
     lex_result = do_lex(program)
     with pytest.raises(ExecutorError) as exc_info:
         executor(*lex_result)
 
     e: ExecutorError = exc_info.value
-    for expected, stack_frame in zip(stack, e.stack_frames):
+
+    if not isinstance(msg, tuple):
+        msg = (msg, )
+
+    msg_lower = e.msg.lower()
+    for msg_ in msg:
+        assert msg_ in msg_lower
+
+    for expected, stack_frame in zip(stack[::-1], e.stack_frames):
+        print(stack_frame)
         if not isinstance(expected, tuple):
             expected = (expected, )
 
+        lower_str = str(stack_frame).lower()
+
         for item in expected:
-            assert item in str(stack_frame)
+            assert item in lower_str
+
+    print("~~ ~~ ~~ ~~ ~~ ~~ ~~")
+    pretty = e.pretty()
+    print(pretty)
