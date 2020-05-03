@@ -44,3 +44,9 @@ class Expression:
 
     def sub_ns(self, type_first_char: str) -> "Expression":
         return self.append(Expression(type_first_char=type_first_char))
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}" \
+               f"`{self.type}` " \
+               f"{self.lemmas}" \
+               f">"
