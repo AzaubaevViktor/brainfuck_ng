@@ -17,7 +17,7 @@ checks = [
     ("(abcdef abcdef)", ("abcdef", "abcdef")),
     ("(print \"test\")", ("print", "test")),
     ("(print \"(lol man)\")", ("print", "(lol man)")),
-    ("(print \"Oh my... \\\" god\"", ("print", "Oh my... \" god")),
+    ("(print \"Oh my... \\\" god\")", ("print", "Oh my... \" god")),
     ('(\"\\t \\n\")', ("\t \n",))
 ]
 
