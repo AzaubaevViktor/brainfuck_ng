@@ -1,7 +1,7 @@
 from typing import List, Union
 
 from executor import ExecutorError
-from ._base import BaseModule
+from executor.builtin._base import BaseModule
 from lexer import Lemma, LexerResultT
 
 

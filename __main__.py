@@ -12,7 +12,6 @@ from traceback import print_exc
 
 from executor import Executor, ExecutorError
 from executor.builtin import ModuleImporter
-from executor.builtin._base_builtin import BaseBuiltin
 
 from lexer import do_lex
 
@@ -24,9 +23,8 @@ variables = {
     'debug': True,
 }
 
-_importer = ModuleImporter()
 
-executor = Executor(_importer.scope_with_import, **variables)
+executor = Executor(ModuleImporter.scope_with_import(), **variables)
 
 _init = """
 (import:builtin builtin)

@@ -1,7 +1,4 @@
-from typing import List, Union
-
-from executor import ExecutorError
-from ._base import BaseModule
+from executor.builtin._base import BaseModule
 from lexer import Lemma
 
 
@@ -10,8 +7,7 @@ class TestModule(BaseModule):
     dependencies = ("builtin", )
 
     def __init__(self):
-        from .module_for_test import At
-        from ._base_builtin import BaseBuiltin
+        from modules.builtin import BaseBuiltin
 
     def __call__(self, variables):
         return {

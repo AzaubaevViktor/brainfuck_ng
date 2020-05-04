@@ -28,8 +28,9 @@ class BaseImportModule(BaseModule):
     NAME = None
     about = "This is base module for import"
 
-    def __init__(self, importer: "ModuleImporter"):
-        self.importer = importer
+    def __init__(self):
+        from .importer import ModuleImporter
+        self.importer = ModuleImporter
 
     def __call__(self, variables):
         return {
@@ -40,7 +41,7 @@ class BaseImportModule(BaseModule):
 
     def _do_scan(self, path: LexerResultT, executor):
         # TODO: This is fake
-        from ._test import TestModule
+        raise NotImplementedError()
 
     def _do_import(self, name, executor):
         module_name = name.text
