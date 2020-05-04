@@ -2,7 +2,7 @@ from typing import List, Union
 
 from executor import ExecutorError
 from ._base import BaseModule
-from lexer import Lemma
+from lexer import Lemma, LexerResultT
 
 
 class BaseBuiltin(BaseModule):
@@ -15,7 +15,37 @@ class BaseBuiltin(BaseModule):
             'print': self.print,
             'defn': self.defn,
             'op': self.get_operator,
+            '.': self._getattr,
+            '.=': self._setattr,
+            'item': self._getitem,
+            'item=': self._setitem,
+            'True': True,
+            'False': False,
         }
+
+    @staticmethod
+    def _getattr(obj: LexerResultT, attr: Lemma, executor):
+        return getattr(executor(obj), attr.text)
+
+    @staticmethod
+    def _setattr(obj_: LexerResultT, attr_: Lemma, value_: LexerResultT, executor):
+        attr = attr_.text
+        obj = executor(obj_)
+        value = executor(value_)
+
+        setattr(obj, attr, value)
+
+        return value
+
+    @staticmethod
+    def _getitem(obj: LexerResultT, item: LexerResultT, executor):
+        return executor(obj).__getitem__(executor(item))
+
+    @staticmethod
+    def _setitem(obj: LexerResultT, item: LexerResultT, value: LexerResultT, executor):
+        _value = executor(value)
+        executor(obj).__setitem__(executor(item), _value)
+        return _value
 
     @staticmethod
     def add(*lemmas: 'Lemma', executor: 'Executor'):

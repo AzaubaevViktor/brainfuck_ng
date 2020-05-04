@@ -71,8 +71,9 @@ class Variables:
 
 
 class Executor:
-    def __init__(self, variables: VariablesT):
+    def __init__(self, variables: VariablesT, **kwargs):
         self.variables = Variables(variables)
+        self.variables.update(kwargs)
 
     def __call__(self, *program: LexerResultT):
         result = None
