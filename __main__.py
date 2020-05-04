@@ -12,6 +12,7 @@ from traceback import print_exc
 
 from executor import Executor, ExecutorError
 from executor.builtin import ModuleImporter
+from modules.builtin import BaseBuiltin
 
 from lexer import do_lex
 
@@ -56,6 +57,8 @@ if __name__ == '__main__':
             print(executor(*lex_result))
         except ExecutorError as e:
             print(e.pretty())
+        except SystemExit:
+            raise
         except:
             print_exc()
         finally:

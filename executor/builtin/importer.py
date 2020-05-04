@@ -1,6 +1,7 @@
 from typing import Type
 
-from ._base import BaseModule, BaseImportModule
+from lexer import LexerResultT
+from ._base import BaseModule
 
 
 class ModuleImporter:
@@ -25,3 +26,32 @@ class ModuleImporter:
         executor.variables.update(variables)
 
         return module
+
+
+class BaseImportModule(BaseModule):
+    NAME = None
+    about = "This is base module for import"
+
+    def __init__(self):
+        from .importer import ModuleImporter
+        self.importer = ModuleImporter
+
+    def __call__(self, variables):
+        return {
+            'import:@modules': self.modules,
+            'import:builtin': self._do_import,
+            'import:scan': self._do_scan,
+        }
+
+    def _do_scan(self, path: LexerResultT, executor):
+        # TODO: This is fake
+        raise NotImplementedError()
+
+    def _do_import(self, name, executor):
+        module_name = name.text
+
+        assert module_name in self.modules, self.modules
+
+        ModuleClass = self.modules[module_name]
+
+        return self.importer.import_module(ModuleClass, executor)
