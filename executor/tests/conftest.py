@@ -1,97 +1,18 @@
-from typing import List, Union
-
 import pytest
 
-from executor import Executor, ExecutorError
-from executor.tests.module_for_test import Main
-from lexer import Lemma, LexerResultT
+from executor import Executor
+from executor.builtin import ModuleImporter
+
+_importer = ModuleImporter()
 
 
 @pytest.fixture(scope='function')
 def executor():
-    items = []
+    # TODO: One scope please
+    executor = Executor(_importer.scope_with_import)
 
-    def append_(lemma: Lemma, executor):
-        items.append((lemma.text if isinstance(lemma, Lemma) else type(lemma), executor(lemma)))
+    executor.run('(import:scan executor/builtin/_test)')
+    executor.run('(import:builtin _test)')
+    executor.run('(print "Ready to test boooy?")')
 
-    def ret_(executor):
-        return items
-
-    def defn(name: Lemma, arguments: List[Lemma], commands: tuple, executor: Executor):
-        func_name = f"generated_{name.text}"
-
-        argument_names = [arg.text for arg in arguments]
-
-        def new_func(*args, executor: Executor):
-            # TODO: Wrong arguments Exception
-
-            if len(argument_names) > len(args):
-                expected_argument = argument_names[len(args)]
-                raise ExecutorError(f"{func_name}: Expect argument {expected_argument}")
-
-            if len(argument_names) < len(args):
-                raise ExecutorError(f"{func_name}: Too many arguments (expect {len(argument_names)})")
-
-            sub = executor.sub()
-
-            for arg_name, arg in zip(argument_names, args):
-                # TODO: Error while argument calculation Exception
-                sub.variables[arg_name] = executor(arg)
-
-            return sub(*commands)
-
-        new_func.__name__ = func_name
-
-        executor.variables[name.text] = new_func
-
-        return defn
-
-    def to_int(lemma: Lemma, executor: Executor):
-        return int(lemma.text)
-
-    def add(*lemmas: Lemma, executor: Executor):
-        return sum(executor(lemma) for lemma in lemmas)
-
-    def do_set(var_name_: Lemma, value_: Union[tuple, Lemma], executor: Executor):
-        value = executor(value_)
-        var_name_ = var_name_.text
-
-        executor.variables[var_name_] = value
-
-    modules = {
-        Main.NAME: Main
-    }
-
-    def _import(module_name: Lemma, executor):
-        ModuleClass = modules[module_name.text]
-        module = ModuleClass(executor)
-        executor.variables.update(module())
-        return module
-
-    def get_operator(op_name: Lemma, executor):
-        import operator
-        op_func = getattr(operator, op_name.text)
-
-        def wrapper_op(*raw_args: LexerResultT, executor):
-            args = map(executor, raw_args)
-            return op_func(*args)
-
-        wrapper_op.__name__ = f"wrapper_{op_func.__name__}"
-        return wrapper_op
-
-    variables = {
-        'hello': 'world',
-        'add': add,
-        'append': append_,
-        'ret': ret_,
-        'x': 'x_value',
-        'y': 'y_value',
-        'int': to_int,
-        'defn': defn,
-        'set': do_set,
-        '=': do_set,
-        'import': _import,
-        'op': get_operator,
-    }
-
-    return Executor(variables)
+    return executor

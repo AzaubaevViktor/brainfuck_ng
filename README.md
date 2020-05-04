@@ -2,6 +2,41 @@
 
 Высокоуровневый лиспоподбный язык, зачем-то транслирующийся в brainfuck
 
+## Описание
+
+```
+str -> Lexer -> Executor -> result
+```
+
+Лексер разбирает только скобки, леммы и строки (с escaping)  
+Исполнитель запускается в базовой области видимости, где можно ставить свои функции
+В целом основной цикл интерпретатора работает так:
+```python
+
+def my_func(*lemmas, executor):
+    pass
+    # Do some things with lemmas
+    return executor(lemmas[0])(lemmas[1:])
+
+variables = {
+    'my_func': my_func,
+    'x': 10
+}
+from executor import Executor
+from lexer import do_lex
+
+executor = Executor(variables)
+
+while True:
+    inp = input("Omg you run me ~~> ")
+    lex_result = do_lex(inp)
+    # Some operations with lemmas
+    
+    result = executor(*lex_result)
+    print("Here result:")
+    print(result)
+```
+
 ## REPL
 ```
 ~~> ((op add) 12 23)
@@ -30,3 +65,5 @@ Hello, world!
 
 ## Трансляция в brainfuck
 [Не реализовано]
+
+## Список основных реализаций

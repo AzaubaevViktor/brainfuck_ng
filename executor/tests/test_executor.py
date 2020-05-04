@@ -1,7 +1,7 @@
 import pytest
 
+from executor.builtin.module_for_test import At
 from executor.exc import ExecutorError
-from executor.tests.module_for_test import Main
 from lexer import do_lex, DIVIDERS
 
 _dividers_raw = repr(DIVIDERS)[1:-1]
@@ -47,10 +47,10 @@ checks = [
      "(test (int 2))"
      "(append check)"
      "(ret)", [('check', 1), ('check', 1), ('check', 2), ('check', 1)]),
-    ("(import at)"
+    ("(import:builtin at)"
      "(append some_text)"
      "(append (some_method (int 2) (int 3)))"
-     "(ret)", [('some_text', Main.some_text), (tuple, 2 ** 3)]),
+     "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
     # TODO: Test for module shutdown
     ('[1 2 3]', [1, 2, 3]),
     ('[1 2 "x" (add 5 10) ((op pow) 2 3)]', [1, 2, 'x', 15, 8]),

@@ -11,12 +11,18 @@ STRING_END = '\"'
 
 
 def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
-    lexer = _Lexer(source)
-
-    return lexer()
+    return BaseLexer()(source)
 
 
-class _Lexer:
+class BaseLexer:
+    def __init__(self):
+        pass
+
+    def __call__(self, source):
+        return _old_lexer(source)()
+
+
+class _old_lexer:
     def __init__(self, source: Union[BaseSource, str]):
         if isinstance(source, str):
             source = StringSource(source)
