@@ -33,14 +33,14 @@ checks = [
     ("(int 10)", 10),
     ("(int -10)", -10),
     ("(int 1234)", 1234),
-    ("(add (int 1) (int 2))", 3),
-    ("(defn test [a b] ( (add a b) )) (test (int 1) (int 2))", 3),
-    ("(defn test [a b] ( (add (int 1) a b) (add a b) )) (test (int 1) (int 2))", 3),
-    ("(set new_var (int 1)) new_var", 1),
-    ("(set check (int 1))"
+    ("(+ (int 1) (int 2))", 3),
+    ("(defn test [a b] ( (+ a b) )) (test (int 1) (int 2))", 3),
+    ("(defn test [a b] ( (+ (int 1) a b) (+ a b) )) (test (int 1) (int 2))", 3),
+    ("(= new_var (int 1)) new_var", 1),
+    ("(= check (int 1))"
      "(append check)"
      "(defn test [a] ("
-     "    (set check a)"
+     "    (= check a)"
      "    (append check)"
      "))"
      "(append check)"
@@ -53,7 +53,7 @@ checks = [
      "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
     # TODO: Test for module shutdown
     ('[1 2 3]', [1, 2, 3]),
-    ('[1 2 "x" (add 5 10) ((op pow) 2 3)]', [1, 2, 'x', 15, 8]),
+    ('[1 2 "x" (+ 5 10) ((op pow) 2 3)]', [1, 2, 'x', 15, 8]),
     ('((op pow) (int 2) (int 3))', 8),
     ('((op pow) 2 3)', 8),
     *string_values_tests,
@@ -75,15 +75,15 @@ def test_executor(executor, programm, expected):
 
 wrongs = [
     ("un_kn", ["un_kn"], ("term", "not found", "un_kn")),
-    ("(add un_kn 1)", ["add", "un_kn"], ("un_kn", "not found", "term")),
+    ("(+ un_kn 1)", ["+", "un_kn"], ("un_kn", "not found", "term")),
     ("(defn func_name [arg1 arg2] ())"
      "(func_name 12)", ["func_name"], ("func_name", "arg2", "expect", "argument")),
     ("(defn func_name [arg1] ())"
      "(func_name 12 12)", ["func_name"], ("too many", "expect 1")),
     ("(defn func_name [arg1] ("
-     "   (add 10 unk_nown)"
+     "   (+ 10 unk_nown)"
      "))"
-     "(func_name 10)", ["func_name", 'add', 'unk_nown'], ("unk_nown", "not found", "term"))
+     "(func_name 10)", ["func_name", '+', 'unk_nown'], ("unk_nown", "not found", "term"))
 ]
 
 
