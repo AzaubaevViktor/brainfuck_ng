@@ -21,6 +21,7 @@ class BaseBuiltin(BaseModule):
             'item=': self._setitem,
             'True': True,
             'False': False,
+            'exit': self._exit
         }
 
     @staticmethod
@@ -105,3 +106,7 @@ class BaseBuiltin(BaseModule):
 
         wrapper_op.__name__ = f"wrapper_{op_func.__name__}"
         return wrapper_op
+
+    @staticmethod
+    def _exit(code: LexerResultT, executor):
+        exit(executor(code))
