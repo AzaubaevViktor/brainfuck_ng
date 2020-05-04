@@ -1,4 +1,4 @@
-from ._import import BaseModule
+from ._base import BaseModule
 
 
 class At(BaseModule):
