@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 from lexer import LexerResultT, Lemma
 
@@ -7,24 +7,48 @@ class ErrorStackFrame:
     def __init__(self, lemma: LexerResultT):
         self.lemma = lemma
 
-    def __str__(self):
+    def __str__(self, wrong_lemma: LexerResultT = None):
         if isinstance(self.lemma, Lemma):
+            s = f"{self.lemma.source}:{self.lemma.line}:{self.lemma.pos}: "
+            show = " " * len(s)
 
-            return f"{self.lemma.source}:{self.lemma.line}:{self.lemma.pos}: {self.lemma.text}"
+            item = f"{self.lemma.text}"
+            s += item
+            if self.lemma == wrong_lemma:
+                show += "^" * len(item)
+            else:
+                show += " " * len(item)
+
+            if wrong_lemma:
+                s += "\n" + show
+            return s
 
         first: Lemma = self.lemma[0]
         s = f"{first.source}:{first.line}:{first.pos}: ("
+        show = " " * len(s)
+
         for lemma in self.lemma:
             if isinstance(lemma, tuple):
-                s += "(...)"
+                item = "(...)"
             else:
-                s += lemma.text
+                item = lemma.text
+
+            s += item
+
+            if lemma == wrong_lemma:
+                show += "^" * len(item)
+            else:
+                show += " " * len(item)
 
             if lemma is not self.lemma[-1]:
                 s += " "
+                show += " "
 
         s += ")"
+        show += " "
 
+        if wrong_lemma and show.strip():
+            s += "\n" + show
         return s
 
     def __repr__(self):
@@ -34,7 +58,7 @@ class ErrorStackFrame:
 class ExecutorError(Exception):
     def __init__(self, msg, stack_frame: ErrorStackFrame = None):
         self.msg = msg
-        self.stack_frames = []
+        self.stack_frames: List[ErrorStackFrame] = []
         if stack_frame:
             self.append(stack_frame)
 
@@ -45,10 +69,18 @@ class ExecutorError(Exception):
         self.stack_frames.append(stack_frame)
 
     def pretty(self):
-        s = "Stack trace:\n"
-        for item in self.stack_frames[::-1]:
-            s += f"{item}\n"
+        items = []
 
-        s += f"Error msg: {self.msg}\n"
+        wrong = self.stack_frames[0]
 
-        return s
+        for item in self.stack_frames:
+            items.append(item.__str__(wrong.lemma))
+            wrong = item
+
+        items = [
+            "Stack trace:",
+            *items[::-1],
+            f"Error msg: {self.msg}",
+        ]
+
+        return "\n".join(items)

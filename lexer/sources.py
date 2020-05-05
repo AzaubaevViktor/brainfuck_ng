@@ -6,6 +6,9 @@ class BaseSource:
     def __iter__(self) -> Iterable[str]:
         raise NotImplementedError()
 
+    def __eq__(self, other: "BaseSource"):
+        raise NotImplementedError()
+
 
 class StringSource:
     def __init__(self, data: str):
@@ -13,6 +16,12 @@ class StringSource:
 
     def __iter__(self):
         yield from self.data
+
+    def __eq__(self, other: "BaseSource"):
+        if not isinstance(other, StringSource):
+            return False
+
+        return self.data == other.data
 
     def __repr__(self):
         return f"<StrSource({len(self.data)})>"
@@ -30,6 +39,12 @@ class FileSource:
         with open(self.file_name, "rt") as f:
             while data := f.read(self.CHUNK):
                 yield from data
+
+    def __eq__(self, other: BaseSource):
+        if not isinstance(other, FileSource):
+            return False
+
+        return self.file_name == other.file_name
 
     def __repr__(self):
         return f"<FileSource:{self.file_name}>"

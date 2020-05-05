@@ -11,6 +11,15 @@ class Lemma:
     def append(self, ch):
         self.text += ch
 
+    def __eq__(self, other: 'Lemma'):
+        if not isinstance(other, Lemma):
+            return False
+
+        return (self.source == other.source
+                and self.text == other.text
+                and self.line == other.line
+                and self.pos == other.pos)
+
     def __repr__(self):
         return f"<{self.__class__.__name__}:{self.source}:{self.line}:{self.pos} `{self.text}`>"
 
