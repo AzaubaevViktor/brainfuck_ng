@@ -25,7 +25,7 @@ class BaseLexer:
 
         self.ns_stack: List[ExpressionT] = [self.root_obj]
 
-        self.line_num = 0
+        self.line_num = 1
         self.pos_num = 0
 
     def __call__(self) -> LexerResultT:
