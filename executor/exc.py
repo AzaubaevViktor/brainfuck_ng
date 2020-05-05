@@ -1,3 +1,4 @@
+from traceback import format_exc
 from typing import Union, List
 
 from lexer import LexerResultT, Lemma
@@ -98,5 +99,7 @@ class ExecutorError(Exception):
 
 class PythonExecutorError(ExecutorError):
     def __init__(self, orig_exc):
-        msg = f"Python exception was captured: `{orig_exc}`"
+        msg = f"Python exception was captured: `{orig_exc}`\n" \
+              f"Original stacktrace:\n    |" + \
+              format_exc().replace("\n", "\n    |")
         super(PythonExecutorError, self).__init__(msg)

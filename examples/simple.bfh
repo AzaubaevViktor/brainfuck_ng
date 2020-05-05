@@ -1,6 +1,6 @@
-(@add $0 97)
+(@add 0 97)
 
-(@print $0)
+(@print 0)
 
 (@@mem $0 97)
 (@@out "a")

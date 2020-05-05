@@ -46,7 +46,7 @@ class Variables:
             return self.data[item]
 
         if item not in self.parent:
-            raise ExecutorError(f'Term `{item}` not found in this scope. Try:\n'
+            raise ExecutorError(f'Term `{item}` not found in this scope. Try:\n' +
                                 ", ".join(self.keys()))
 
         return self.parent[item]

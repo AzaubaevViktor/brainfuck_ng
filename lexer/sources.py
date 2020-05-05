@@ -23,6 +23,9 @@ class StringSource:
 
         return self.data == other.data
 
+    def __str__(self):
+        return f"String({len(self.data)})"
+
     def __repr__(self):
         return f"<StrSource({len(self.data)})>"
 
@@ -45,6 +48,9 @@ class FileSource:
             return False
 
         return self.file_name == other.file_name
+
+    def __str__(self):
+        return f"{self.file_name}"
 
     def __repr__(self):
         return f"<FileSource:{self.file_name}>"
