@@ -1,9 +1,0 @@
-(@defn @add [addr value] (
-    (@_go addr)
-    (@_add value)
-    (@_back addr)
-))
-
-(@add $3 10)
-
-(@@mem $3 10)
