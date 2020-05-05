@@ -3,7 +3,7 @@ from typing import Union, Type
 from lexer import Lemma, LexerResultT, StringLemma, BaseSource
 from lexer.lexer import BaseLexer
 
-from .exc import ExecutorError, ErrorStackFrame
+from .exc import ExecutorError, ErrorStackFrame, PythonExecutorError
 
 """
 TODO: 
@@ -106,6 +106,10 @@ class Executor:
             except ExecutorError as e:
                 e.append(item)
                 raise
+            except Exception as orig_e:
+                e = PythonExecutorError(orig_e)
+                e.append(item)
+                raise e
 
         return result
 

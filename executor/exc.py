@@ -84,3 +84,9 @@ class ExecutorError(Exception):
         ]
 
         return "\n".join(items)
+
+
+class PythonExecutorError(ExecutorError):
+    def __init__(self, orig_exc):
+        msg = f"Python exception was captured: `{orig_exc}`"
+        super(PythonExecutorError, self).__init__(msg)
