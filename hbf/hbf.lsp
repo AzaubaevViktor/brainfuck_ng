@@ -27,8 +27,21 @@
 
 (@defmacrocommand @cycle [addr] (
     (@go addr (
-        (@cycle addr (
+        (@_cycle (
             (@super:inline)
         ))
     ))
+))
+
+(@defmacro @zero [addr] (
+    (@go addr (
+        (@_cycle (
+            (@_plus -1)
+        ))
+    ))
+))
+
+(@defmacro @set [addr value] (
+    (@zero addr)
+    (@add addr value)
 ))
