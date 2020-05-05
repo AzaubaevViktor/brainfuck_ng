@@ -20,6 +20,11 @@ class HBFBuiltin(BaseModule):
             '@defmacrocommand': self.defmacro_command,
         }
 
+    def _move(self, addr):
+        if addr < 0:
+            return "<" * (-addr)
+        return ">" * addr
+
     def go(self, addr_: LexerResultT, executor):
         addr = executor(addr_)
         return self._move(addr)

@@ -52,7 +52,9 @@ def test_example(file_name):
 
     try:
         from hbf.hbf_builtin import HBFBuiltin
+        from modules.builtin import BaseBuiltin
 
+        executor.run("(import:builtin:inline builtin)")
         executor.run("(import:builtin:inline hbf)")
         executor.run('(import:inline "hbf/hbf.lsp")')
 
