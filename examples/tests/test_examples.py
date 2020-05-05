@@ -8,7 +8,15 @@ from executor.builtin import ModuleImporter
 from interpreter import Interpreter
 from lexer import FileSource, do_lex, Lemma, LexerResultT, StringLemma
 
-files = [os.path.join("examples", name) for name in os.listdir("examples") if name.endswith(".bfh")]
+
+def _files():
+    for root, folders, files in os.walk("examples"):
+        for file in files:
+            if file.endswith(".bfh"):
+                yield os.path.join(root, file)
+
+
+files = tuple(_files())
 
 
 @pytest.mark.parametrize('file_name', files)
