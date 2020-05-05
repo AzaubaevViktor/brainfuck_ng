@@ -30,10 +30,10 @@ class HBFBuiltin(BaseModule):
 
         executor.variables[name.text] = self.last_address
 
-        return [self._move(self.last_address),
-                self.plus(value, executor),
-                self._move(-self.last_address)
-                ]
+        return "".join((self._move(self.last_address),
+                        self.plus(value, executor),
+                        self._move(-self.last_address)
+                        ))
 
     def _move(self, addr):
         if addr < 0:
@@ -51,7 +51,7 @@ class HBFBuiltin(BaseModule):
     def plus(self, value_: LexerResultT, executor):
         value = executor(value_)
         if value < 0:
-            return "-" * value
+            return "-" * -value
         return "+" * value
 
     def print(self, executor):
