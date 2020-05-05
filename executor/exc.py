@@ -8,6 +8,9 @@ class ErrorStackFrame:
         self.lemma = lemma
 
     def __str__(self, wrong_lemma: LexerResultT = None):
+        if not self.lemma:
+            return "()"
+
         if isinstance(self.lemma, Lemma):
             s = f"{self.lemma.source}:{self.lemma.line}:{self.lemma.pos}: "
             show = " " * len(s)

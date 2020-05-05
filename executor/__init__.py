@@ -129,6 +129,9 @@ class Executor:
             return None
 
     def _call_tuple(self, program: tuple):
+        if not program:
+            raise ExecutorError("Need more than one item in tuple")
+
         func = self(program[0])
         if not callable(func):
             e = ExecutorError(f"Expect callable instead: `{func}`")
