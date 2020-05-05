@@ -124,8 +124,8 @@ class HBFBuiltin(BaseModule):
                     result_inline += clojure_executor(command)
                 return result_inline
 
-            if "@super:inline" in sub.variables:
-                raise ExecutorError(f"⚠️⚠️⚠️ Rewrite @super:inline: {sub.variables['@super:inline']}")
+            # if "@super:inline" in sub.variables:
+            #     raise ExecutorError(f"⚠️⚠️⚠️ Rewrite @super:inline: {sub.variables['@super:inline']}")
             sub.variables["@super:inline"] = super_inline
 
             for arg_name, arg in zip(argument_names, args):

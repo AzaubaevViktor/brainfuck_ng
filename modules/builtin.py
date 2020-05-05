@@ -14,6 +14,7 @@ class BaseBuiltin(BaseModule):
             '+': self.add,
             '*': self.mul,
             '/': self.div,
+            '-': self.sub,
             'print': self.print,
             'defn': self.defn,
             'op': self.get_operator,
@@ -65,6 +66,10 @@ class BaseBuiltin(BaseModule):
     @staticmethod
     def div(a: LexerResultT, b: LexerResultT, executor):
         return executor(a) / executor(b)
+
+    @staticmethod
+    def sub(a: LexerResultT, b: LexerResultT, executor):
+        return executor(a) - executor(b)
 
     @staticmethod
     def print(*objs: 'LexerResultT', executor):
