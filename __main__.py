@@ -14,8 +14,7 @@ from executor import Executor, ExecutorError
 from executor.builtin import ModuleImporter
 from modules.builtin import BaseBuiltin
 
-from lexer import do_lex
-
+from lexer import do_lex, BaseSource
 
 variables = {
     'version': 2,
@@ -39,10 +38,7 @@ if __name__ == '__main__':
 
         s = input("~~> ")
         try:
-            lex_result = do_lex(s)
-            if executor.variables.get('debug', True):
-                print(lex_result)
-            print(executor(*lex_result))
+            print(executor.run(s))
         except ExecutorError as e:
             print(e.pretty())
         except SystemExit:

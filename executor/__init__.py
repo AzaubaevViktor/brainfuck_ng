@@ -146,7 +146,7 @@ class Executor:
     def sub(self) -> "Executor":
         return Executor(self.variables)
 
-    def run(self, source: BaseSource, LexerClass: Type[BaseLexer] = BaseLexer):
+    def run(self, source: Union[BaseSource, str], LexerClass: Type[BaseLexer] = BaseLexer):
         lex_results = LexerClass(source)()
 
         return self(*lex_results)
