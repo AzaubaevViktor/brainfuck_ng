@@ -1,4 +1,4 @@
-from typing import Union, Type
+from typing import Union, Type, Optional
 
 from lexer import Lemma, LexerResultT, StringLemma, BaseSource
 from lexer.lexer import BaseLexer
@@ -39,16 +39,22 @@ class BaseScope:
 class Variables:
     def __init__(self, parent: VariablesT):
         self.parent = parent
-        self.data = None
+        self.data: Optional[dict] = None
 
     def __getitem__(self, item: str):
         if self.data and item in self.data:
             return self.data[item]
 
         if item not in self.parent:
-            raise ExecutorError(f'Term {item} not found in this scope')
+            raise ExecutorError(f'Term `{item}` not found in this scope. Try:\n'
+                                ", ".join(self.keys()))
 
         return self.parent[item]
+
+    def keys(self):
+        if self.data:
+            yield from self.data.keys()
+        yield from self.parent.keys()
 
     def __setitem__(self, key, value):
         if self.data is None:

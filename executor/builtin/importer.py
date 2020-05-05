@@ -63,7 +63,7 @@ class BaseImportModule(BaseModule):
 
         if module_name not in self.modules:
             e = ExecutorError(f"`{module_name}` does not found in builtin modules; "
-                              f"Check this: {', '.join(self.modules.keys())}")
+                              f"Check this:\n{', '.join(self.modules.keys())}")
             e.append(name)
             raise e
 
