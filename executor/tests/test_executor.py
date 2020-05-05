@@ -124,7 +124,9 @@ wrongs = [
      ("does not found in builtin modules", "wrong_module")),
     ('(import "executor/tests/wrong.lsp")', ['import', 'print', 'unk_nown', 'unk_nown'],
      ("not found", "term", "unk_nown")),
-    ('(/ 1 0)', ["/"], ("python", "exception"))
+    ('(/ 1 0)', ["/"], ("python", "exception")),
+    ('((/ 1 0) [1 2])', ["/"], ("zero", "division")),
+    ('(+ [(/ 1 0) [1 2]] [0])', ["+", "(...)", "/"], ("zero", "division")),
 ]
 
 
