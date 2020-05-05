@@ -18,8 +18,7 @@ from lexer import do_lex
 
 
 variables = {
-    'about': "REPL v1",
-    'version': 1,
+    'version': 2,
     '@': globals(),
     'debug': True,
 }
@@ -27,22 +26,11 @@ variables = {
 
 executor = Executor(ModuleImporter.scope_with_import(), **variables)
 
-_init = """
-(import:builtin builtin)
-(print "Hello from LolLisp interpreter!")
-(print "Version:" version)
-(print "Little magic here...")
-
-(= @exec (item @ "executor"))
-(= @vars (. (item @ "executor") variables))
-
-(print "Now you can use `@exec` and `@vars`")
-(print "Enjoy!")
-(print "To disable debug output use:")
-(print "(= debug False)")
-"""
-
-executor(*do_lex(_init))
+try:
+    executor(*do_lex('(import "modules/repl.lsp")'))
+except ExecutorError as e:
+    print(e.pretty())
+    raise
 
 if __name__ == '__main__':
     while True:

@@ -10,7 +10,6 @@ class BaseModule:
     dependencies = None
 
     def __init_subclass__(cls, **kwargs):
-        print("Register this please:", cls, kwargs)
         if cls.NAME:
             cls.modules[cls.NAME] = cls
 
