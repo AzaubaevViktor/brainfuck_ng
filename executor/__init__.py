@@ -57,7 +57,7 @@ class Variables:
         self.data[key] = value
         return value
 
-    def get_scope(self, name) -> BaseScope:
+    def get_scope(self, name: str) -> BaseScope:
         return type(
             name,
             (BaseScope, ),

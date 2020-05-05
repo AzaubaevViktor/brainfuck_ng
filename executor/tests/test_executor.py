@@ -39,15 +39,19 @@ import_tests = [
      "    (append (some_method 2 3))"
      "))"
      "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
-    ("(import:inline executor/tests/module.lsp)"
+    ('(import:inline "executor/tests/module.lsp")'
      "(append some_text)"
      "(append (mul_sum 2 3 5))"
      "(ret)", [('some_text', "text"), (tuple, 11)]),
-    ("(import executor/tests/module.lsp ("
+    ('(import "executor/tests/module.lsp" ('
      "    (append some_text)"
      "    (append (mul_sum 2 3 5))"
      "))"
-     "(ret)", [('some_text', "text"), (tuple, 11)])
+     "(ret)", [('some_text', "text"), (tuple, 11)]),
+    ('(= module (import "executor/tests/module.lsp"))'
+     "(append (. module some_text))"
+     "(append ((. module mul_sum) 2 3 5))"
+     "(ret)", [(tuple, "text"), (tuple, 11)])
 ]
 
 checks = [
@@ -112,12 +116,12 @@ wrongs = [
      "(func_name 10)", ["func_name", '+', 'unk_nown'], ("unk_nown", "not found", "term")),
     ("(import:builtin at)"
      "(append some_text)", ["append", "some_text"], ("not found", "term", "some_text")),
-    ("(import executor/tests/module.lsp)"
+    ('(import "executor/tests/module.lsp")'
      "(mul_sum 2 3 5)", ['mul_sum'], ('not found', 'term', 'mul_sum')),
-    ("(import unknown/file.lsp)", ["import", "unknown/file.lsp"],
-     ("not found", "exists", "module")),
-    ("(import:builtin wrong_module)", ['import:builtin'],
-     ("not found", "module", "wrong_module"))
+    ('(import "unknown/file.lsp")', ["import", "unknown/file.lsp"],
+     ("does not", "exist", "module")),
+    ('(import:builtin wrong_module)', ['import:builtin', "wrong_module"],
+     ("does not found in builtin modules", "wrong_module"))
 ]
 
 

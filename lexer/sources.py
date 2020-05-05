@@ -1,3 +1,4 @@
+import os
 from typing import Iterable
 
 
@@ -22,6 +23,8 @@ class FileSource:
 
     def __init__(self, file_name: str):
         self.file_name = file_name
+        if not os.path.exists(self.file_name):
+            raise FileNotFoundError(self.file_name)
 
     def __iter__(self):
         with open(self.file_name, "rt") as f:

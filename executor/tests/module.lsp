@@ -4,5 +4,5 @@
 
 (defn mul_sum [a b c] (
     (= temp a)
-    (= temp (+ (* temp b) c)
+    (= temp (+ (* temp b) c))
 ))

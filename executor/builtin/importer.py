@@ -1,7 +1,8 @@
 from typing import Type
 
-from lexer import LexerResultT, Lemma
+from lexer import LexerResultT, Lemma, FileSource
 from ._base import BaseModule
+from .. import ExecutorError, ErrorStackFrame
 
 
 class ModuleImporter:
@@ -60,13 +61,17 @@ class BaseImportModule(BaseModule):
     def _do_import_builtin(self, name: Lemma, commands: LexerResultT = None, *, executor):
         module_name = name.text
 
-        assert module_name in self.modules, self.modules
+        if module_name not in self.modules:
+            e = ExecutorError(f"`{module_name}` does not found in builtin modules; "
+                              f"Check this: {', '.join(self.modules.keys())}")
+            e.append(ErrorStackFrame(name))
+            raise e
 
         ModuleClass = self.modules[module_name]
 
         sub = executor.sub()
 
-        result = module_instance = ModuleImporter.import_module(ModuleClass, sub)
+        result = ModuleImporter.import_module(ModuleClass, sub)
 
         if commands:
             result = sub(*commands)
@@ -75,8 +80,30 @@ class BaseImportModule(BaseModule):
 
         return result
 
-    def _do_import(self):
-        raise NotImplementedError()
+    def _do_import(self, path_: LexerResultT, commands: LexerResultT = None, *, executor):
+        path = executor(path_)
+        try:
+            source = FileSource(path)
+        except FileNotFoundError:
+            raise ExecutorError(f"Module does not exist: {path}")
+        sub = executor.sub()
 
-    def _do_import_inline(self):
-        raise NotImplementedError()
+        sub.run(source)
+
+        scope = sub.variables.get_scope(path)
+
+        if commands:
+            sub(*commands)
+
+        return scope
+
+    def _do_import_inline(self, path_: LexerResultT, executor):
+        path = executor(path_)
+        try:
+            source = FileSource(path)
+        except FileNotFoundError:
+            raise ExecutorError(f"Module does not exist: {path}")
+
+        result = executor.run(source)
+
+        return result
