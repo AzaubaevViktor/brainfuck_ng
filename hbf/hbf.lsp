@@ -27,7 +27,7 @@
 
 (@defmacrocommand @cycle [addr] (
     (@go addr (
-        (@cycle (
+        (@cycle addr (
             (@super:inline)
         ))
     ))
