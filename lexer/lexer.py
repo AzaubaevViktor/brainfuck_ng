@@ -11,18 +11,10 @@ STRING_END = '\"'
 
 
 def do_lex(source: Union[BaseSource, str]) -> LexerResultT:
-    return BaseLexer()(source)
+    return BaseLexer(source)()
 
 
 class BaseLexer:
-    def __init__(self):
-        pass
-
-    def __call__(self, source):
-        return _old_lexer(source)()
-
-
-class _old_lexer:
     def __init__(self, source: Union[BaseSource, str]):
         if isinstance(source, str):
             source = StringSource(source)
@@ -36,7 +28,7 @@ class _old_lexer:
         self.line_num = 0
         self.pos_num = 0
 
-    def __call__(self):
+    def __call__(self) -> LexerResultT:
         for symbol in self.source:
             if symbol == '\n':
                 self.line_num += 1

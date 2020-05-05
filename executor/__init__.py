@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Union, Type
 
-from lexer import Lemma, LexerResultT, StringLemma
+from lexer import Lemma, LexerResultT, StringLemma, BaseSource
 from lexer.lexer import BaseLexer
 
 from .exc import ExecutorError, ErrorStackFrame
@@ -139,10 +139,7 @@ class Executor:
     def sub(self) -> "Executor":
         return Executor(self.variables)
 
-    def run(self, source, lexer: BaseLexer = None):
-        if lexer is None:
-            lexer = BaseLexer()
-
-        lex_results = lexer(source)
+    def run(self, source: BaseSource, LexerClass: Type[BaseLexer] = BaseLexer):
+        lex_results = LexerClass(source)()
 
         return self(*lex_results)
