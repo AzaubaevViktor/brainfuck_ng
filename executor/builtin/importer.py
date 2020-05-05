@@ -1,6 +1,6 @@
 from typing import Type
 
-from lexer import LexerResultT
+from lexer import LexerResultT, Lemma
 from ._base import BaseModule
 
 
@@ -57,7 +57,7 @@ class BaseImportModule(BaseModule):
 
         return ModuleImporter.import_module(ModuleClass, executor)
 
-    def _do_import_builtin(self, name, executor):
+    def _do_import_builtin(self, name: Lemma, commands: LexerResultT = None, *, executor):
         module_name = name.text
 
         assert module_name in self.modules, self.modules
@@ -66,11 +66,14 @@ class BaseImportModule(BaseModule):
 
         sub = executor.sub()
 
-        module_instance = ModuleImporter.import_module(ModuleClass, sub)
+        result = module_instance = ModuleImporter.import_module(ModuleClass, sub)
+
+        if commands:
+            result = sub(*commands)
 
         executor.variables[module_name] = sub.variables.get_scope(module_name)
 
-        return module_instance
+        return result
 
     def _do_import(self):
         raise NotImplementedError()

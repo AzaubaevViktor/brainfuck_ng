@@ -126,10 +126,16 @@ class Executor:
 
     def _call_tuple(self, program: tuple):
         func = self(program[0])
+        if not callable(func):
+            e = ExecutorError(f"Expect callable instead: `{func}`")
+            e.append(ErrorStackFrame(program[0]))
+            raise e
         args = program[1:]
 
         # TODO: Exception wrapper for function
+
         return func(*args, executor=self)
+
 
     def sub(self) -> "Executor":
         return Executor(self.variables)
