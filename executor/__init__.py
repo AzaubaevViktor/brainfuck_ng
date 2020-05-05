@@ -136,7 +136,6 @@ class Executor:
 
         return func(*args, executor=self)
 
-
     def sub(self) -> "Executor":
         return Executor(self.variables)
 

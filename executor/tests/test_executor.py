@@ -113,7 +113,11 @@ wrongs = [
     ("(import:builtin at)"
      "(append some_text)", ["append", "some_text"], ("not found", "term", "some_text")),
     ("(import executor/tests/module.lsp)"
-     "(mul_sum 2 3 5)", ['mul_sum'], ('not found', 'term', 'mul_sum'))
+     "(mul_sum 2 3 5)", ['mul_sum'], ('not found', 'term', 'mul_sum')),
+    ("(import unknown/file.lsp)", ["import", "unknown/file.lsp"],
+     ("not found", "exists", "module")),
+    ("(import:builtin wrong_module)", ['import:builtin'],
+     ("not found", "module", "wrong_module"))
 ]
 
 
