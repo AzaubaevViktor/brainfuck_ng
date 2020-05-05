@@ -27,7 +27,7 @@ variables = {
 executor = Executor(ModuleImporter.scope_with_import(), **variables)
 
 try:
-    executor(*do_lex('(import "modules/repl.lsp")'))
+    executor(*do_lex('(import:inline "modules/repl.lsp")'))
 except ExecutorError as e:
     print(e.pretty())
     raise

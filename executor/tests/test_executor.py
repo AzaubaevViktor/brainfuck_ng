@@ -134,13 +134,14 @@ def test_wrong_input(executor, program, stack, msg):
         executor(*lex_result)
 
     e: ExecutorError = exc_info.value
-    print("~~ ~~ ERROR ~~ ~~")
-    print(exc_info.getrepr())
-    print("-----------------")
 
     print("~~ ~~ ~~ ~~ ~~ ~~ ~~")
     pretty = e.pretty()
     print(pretty)
+    print()
+    print("~~ ~~ ERROR ~~ ~~")
+    print(exc_info.getrepr())
+    print("-----------------")
 
     if not isinstance(msg, tuple):
         msg = (msg, )

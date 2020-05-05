@@ -1,6 +1,6 @@
 from typing import Union
 
-from lexer import LexerResultT
+from lexer import LexerResultT, Lemma
 
 
 class ErrorStackFrame:
@@ -8,7 +8,24 @@ class ErrorStackFrame:
         self.lemma = lemma
 
     def __str__(self):
-        return f"{self.lemma}"
+        if isinstance(self.lemma, Lemma):
+
+            return f"{self.lemma.source}:{self.lemma.line}:{self.lemma.pos}: {self.lemma.text}"
+
+        first: Lemma = self.lemma[0]
+        s = f"{first.source}:{first.line}:{first.pos}: ("
+        for lemma in self.lemma:
+            if isinstance(lemma, tuple):
+                s += "(...)"
+            else:
+                s += lemma.text
+
+            if lemma is not self.lemma[-1]:
+                s += " "
+
+        s += ")"
+
+        return s
 
     def __repr__(self):
         return f"<{self.__class__.__name__}: {self.lemma}>"
@@ -28,8 +45,10 @@ class ExecutorError(Exception):
         self.stack_frames.append(stack_frame)
 
     def pretty(self):
-        s = f"Error: {self.msg}\n"
+        s = "Stack trace:\n"
         for item in self.stack_frames[::-1]:
             s += f"{item}\n"
+
+        s += f"Error msg: {self.msg}\n"
 
         return s
