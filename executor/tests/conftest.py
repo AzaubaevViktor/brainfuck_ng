@@ -11,7 +11,7 @@ def executor():
 
     from executor.tests._test_module import TestModule
     # executor.run('(import:scan executor/tests/_test_module.py)')
-    executor.run('(import:builtin _test)')
+    executor.run('(import:builtin:inline _test)')
     executor.run('(print "Ready to test boooy?")')
 
     return executor

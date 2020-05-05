@@ -28,6 +28,14 @@ Stack item:
 VariablesT = Union[dict, "Variables"]
 
 
+class BaseScope:
+    def __init__(self, data: dict):
+        self.data = data
+
+    def __getattr__(self, item):
+        return self.data[item]
+
+
 class Variables:
     def __init__(self, parent: VariablesT):
         self.parent = parent
@@ -48,6 +56,13 @@ class Variables:
 
         self.data[key] = value
         return value
+
+    def get_scope(self, name) -> BaseScope:
+        return type(
+            name,
+            (BaseScope, ),
+            self.data
+        )
 
     def __contains__(self, item):
         if self.data and item in self.data:

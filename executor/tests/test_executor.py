@@ -27,7 +27,7 @@ dividers_tests = [
 ]
 
 import_tests = [
-    ("(import:inline:builtin at)"
+    ("(import:builtin:inline at)"
      "(append some_text)"
      "(append (some_method (int 2) (int 3)))"
      "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
@@ -89,7 +89,12 @@ checks = [
 @pytest.mark.parametrize('programm, expected', checks)
 def test_executor(executor, programm, expected):
     lex_result = do_lex(programm)
-    result = executor(*lex_result)
+    try:
+        result = executor(*lex_result)
+    except ExecutorError as e:
+        print(e.pretty())
+        raise
+
     print(result)
     assert expected == result
 

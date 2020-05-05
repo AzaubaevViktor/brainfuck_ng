@@ -37,7 +37,10 @@ class BaseImportModule(BaseModule):
     def __call__(self, variables):
         return {
             'import:@modules': self.modules,
-            'import:builtin': self._do_import,
+            'import:builtin': self._do_import_builtin,
+            'import:builtin:inline': self._do_import_builtin_inline,
+            'import': self._do_import,
+            'import:inline': self._do_import_inline,
             'import:scan': self._do_scan,
         }
 
@@ -45,7 +48,7 @@ class BaseImportModule(BaseModule):
         # TODO: This is fake
         raise NotImplementedError()
 
-    def _do_import(self, name, executor):
+    def _do_import_builtin_inline(self, name, executor: "Executor"):
         module_name = name.text
 
         assert module_name in self.modules, self.modules
@@ -53,3 +56,24 @@ class BaseImportModule(BaseModule):
         ModuleClass = self.modules[module_name]
 
         return ModuleImporter.import_module(ModuleClass, executor)
+
+    def _do_import_builtin(self, name, executor):
+        module_name = name.text
+
+        assert module_name in self.modules, self.modules
+
+        ModuleClass = self.modules[module_name]
+
+        sub = executor.sub()
+
+        module_instance = ModuleImporter.import_module(ModuleClass, sub)
+
+        executor.variables[module_name] = sub.variables.get_scope(module_name)
+
+        return module_instance
+
+    def _do_import(self):
+        raise NotImplementedError()
+
+    def _do_import_inline(self):
+        raise NotImplementedError()
