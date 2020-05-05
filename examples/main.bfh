@@ -11,14 +11,14 @@
     (return value)
 ))
 
-(defn print_num [a i8] (
+(defn print_num [a] (
     (while a (
         (raise NotImplementedError)
     ))
 ))
 
 
-(print "Enter <op> <num> <num>")
+(@printf "Enter <op> <num> <num>")
 
 (set op_char char @read)
 
