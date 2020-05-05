@@ -26,13 +26,20 @@ class ErrorStackFrame:
                 s += "\n" + show
             return s
 
+        self.lemma: Union[List[LexerResultT], tuple]
+
         first: Lemma = self.lemma[0]
+        while isinstance(first, (list, tuple)):
+            first = first[0]
+
         s = f"{first.source}:{first.line}:{first.pos}: ("
         show = " " * len(s)
 
         for lemma in self.lemma:
             if isinstance(lemma, tuple):
                 item = "(...)"
+            elif isinstance(lemma, list):
+                item = "[...]"
             else:
                 item = lemma.text
 
