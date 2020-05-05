@@ -12,6 +12,7 @@ class BaseBuiltin(BaseModule):
         return {
             '=': self.do_set,
             '+': self.add,
+            '*': self.mul,
             'print': self.print,
             'defn': self.defn,
             'op': self.get_operator,
@@ -51,6 +52,14 @@ class BaseBuiltin(BaseModule):
     @staticmethod
     def add(*lemmas: 'Lemma', executor: 'Executor'):
         return sum(executor(lemma) for lemma in lemmas)
+
+    @staticmethod
+    def mul(*lemmas: 'Lemma', executor: 'Executor'):
+        result = 1
+        for lemma in lemmas:
+            result *= executor(lemma)
+
+        return result
 
     @staticmethod
     def print(*objs: 'LexerResultT', executor):

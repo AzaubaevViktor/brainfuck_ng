@@ -17,6 +17,8 @@ class ModuleImporter:
 
         if (dependencies := module.dependencies) is not None:
             for dependency in dependencies:
+                if dependency not in BaseModule.modules:
+                    raise KeyError(f"Can't resolve dependency {dependency} of {ModuleClass}")
                 DependencyClass = BaseModule.modules[dependency]
                 cls.import_module(DependencyClass, executor)
 
@@ -31,10 +33,6 @@ class ModuleImporter:
 class BaseImportModule(BaseModule):
     NAME = None
     about = "This is base module for import"
-
-    def __init__(self):
-        from .importer import ModuleImporter
-        self.importer = ModuleImporter
 
     def __call__(self, variables):
         return {
@@ -54,4 +52,4 @@ class BaseImportModule(BaseModule):
 
         ModuleClass = self.modules[module_name]
 
-        return self.importer.import_module(ModuleClass, executor)
+        return ModuleImporter.import_module(ModuleClass, executor)

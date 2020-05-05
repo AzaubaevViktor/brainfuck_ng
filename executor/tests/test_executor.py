@@ -26,6 +26,30 @@ dividers_tests = [
     for index in range(len(DIVIDERS))
 ]
 
+import_tests = [
+    ("(import:inline:builtin at)"
+     "(append some_text)"
+     "(append (some_method (int 2) (int 3)))"
+     "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
+    ("(import:builtin at)"
+     "(append (. at some_text))"
+     "(ret)", [(tuple, At.some_text)]),
+    ("(import:builtin at ("
+     "    (append some_text)"
+     "    (append (some_method 2 3))"
+     "))"
+     "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
+    ("(import:inline executor/tests/module.lsp)"
+     "(append some_text)"
+     "(append (mul_sum 2 3 5))"
+     "(ret)", [('some_text', "text"), (tuple, 11)]),
+    ("(import executor/tests/module.lsp ("
+     "    (append some_text)"
+     "    (append (mul_sum 2 3 5))"
+     "))"
+     "(ret)", [('some_text', "text"), (tuple, 11)])
+]
+
 checks = [
     ("hello", "world"),
     ("(append x) (append  y) (ret)", [('x', 'x_value'), ('y', 'y_value')]),
@@ -47,10 +71,6 @@ checks = [
      "(test (int 2))"
      "(append check)"
      "(ret)", [('check', 1), ('check', 1), ('check', 2), ('check', 1)]),
-    ("(import:builtin at)"
-     "(append some_text)"
-     "(append (some_method (int 2) (int 3)))"
-     "(ret)", [('some_text', At.some_text), (tuple, 2 ** 3)]),
     # TODO: Test for module shutdown
     ('[1 2 3]', [1, 2, 3]),
     ('[1 2 "x" (+ 5 10) ((op pow) 2 3)]', [1, 2, 'x', 15, 8]),
@@ -61,7 +81,8 @@ checks = [
      '(ret)', [(tuple, "ab")]),
     ('(= check ((op getitem) "abcde" 2))'
      '(append check) (ret)', [('check', 'c')]),
-    *dividers_tests
+    *dividers_tests,
+    *import_tests,
 ]
 
 
@@ -83,7 +104,11 @@ wrongs = [
     ("(defn func_name [arg1] ("
      "   (+ 10 unk_nown)"
      "))"
-     "(func_name 10)", ["func_name", '+', 'unk_nown'], ("unk_nown", "not found", "term"))
+     "(func_name 10)", ["func_name", '+', 'unk_nown'], ("unk_nown", "not found", "term")),
+    ("(import:builtin at)"
+     "(append some_text)", ["append", "some_text"], ("not found", "term", "some_text")),
+    ("(import executor/tests/module.lsp)"
+     "(mul_sum 2 3 5)", ['mul_sum'], ('not found', 'term', 'mul_sum'))
 ]
 
 
