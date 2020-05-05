@@ -1,3 +1,5 @@
+from typing import Union
+
 from lexer import LexerResultT
 
 
@@ -19,11 +21,10 @@ class ExecutorError(Exception):
         if stack_frame:
             self.append(stack_frame)
 
-    def append(self, stack_frame: ErrorStackFrame):
+    def append(self, stack_frame: Union[LexerResultT, ErrorStackFrame]):
         if not isinstance(stack_frame, ErrorStackFrame):
-            raise TypeError(f"Expect {ErrorStackFrame.__name__} instead "
-                            f"{stack_frame.__class__.__name__} "
-                            f"({stack_frame})")
+            stack_frame = ErrorStackFrame(stack_frame)
+
         self.stack_frames.append(stack_frame)
 
     def pretty(self):

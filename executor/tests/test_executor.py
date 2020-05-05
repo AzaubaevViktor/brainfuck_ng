@@ -121,7 +121,9 @@ wrongs = [
     ('(import "unknown/file.lsp")', ["import", "unknown/file.lsp"],
      ("does not", "exist", "module")),
     ('(import:builtin wrong_module)', ['import:builtin', "wrong_module"],
-     ("does not found in builtin modules", "wrong_module"))
+     ("does not found in builtin modules", "wrong_module")),
+    ('(import "executor/tests/wrong.lsp")', ['import', 'print', 'unk_nown', 'unk_nown'],
+     ("not found", "term", "unk_nown"))
 ]
 
 
@@ -132,6 +134,13 @@ def test_wrong_input(executor, program, stack, msg):
         executor(*lex_result)
 
     e: ExecutorError = exc_info.value
+    print("~~ ~~ ERROR ~~ ~~")
+    print(exc_info.getrepr())
+    print("-----------------")
+
+    print("~~ ~~ ~~ ~~ ~~ ~~ ~~")
+    pretty = e.pretty()
+    print(pretty)
 
     if not isinstance(msg, tuple):
         msg = (msg, )
@@ -150,6 +159,4 @@ def test_wrong_input(executor, program, stack, msg):
         for item in expected:
             assert item in lower_str
 
-    print("~~ ~~ ~~ ~~ ~~ ~~ ~~")
-    pretty = e.pretty()
-    print(pretty)
+

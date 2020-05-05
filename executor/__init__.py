@@ -104,7 +104,7 @@ class Executor:
                 else:
                     raise TypeError("Unknown type", type(item), item)
             except ExecutorError as e:
-                e.append(ErrorStackFrame(item))
+                e.append(item)
                 raise
 
         return result
@@ -128,7 +128,7 @@ class Executor:
         func = self(program[0])
         if not callable(func):
             e = ExecutorError(f"Expect callable instead: `{func}`")
-            e.append(ErrorStackFrame(program[0]))
+            e.append(program[0])
             raise e
         args = program[1:]
 
