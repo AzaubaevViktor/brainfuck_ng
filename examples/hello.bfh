@@ -9,7 +9,7 @@
     (@add c 10)
     (@add d 3)
     (@add c 1)
-    (@sub a 1)
+    (@add a 1)
 ))
 
 (@add b 2)
@@ -36,10 +36,10 @@
 (@add d 3)
 (@print d)
 
-(@sub d 6)
+(@add d -6)
 (@print d)
 
-(@sub d 8)
+(@add d -8)
 (@print d)
 
 (@add e 1)
