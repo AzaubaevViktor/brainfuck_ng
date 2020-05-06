@@ -1,9 +1,9 @@
-(@add 5 10)
-(@add 3 13)
-(@add 4 15)
-(@add 2 (+ 96 1))
+(@inc (@addr 5) 10)
+(@inc (@addr 3) 13)
+(@inc (@addr 4) 15)
+(@inc (@addr 2) (+ 96 1))
 
-(@print 2)
+(@print (@addr 2))
 
 (@@out "a")
 (@@mem $2 97)

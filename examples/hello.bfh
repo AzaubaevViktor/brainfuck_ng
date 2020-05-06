@@ -5,42 +5,42 @@
 (@let e 0)
 
 (@cycle a (
-    (@add b 7)
-    (@add c 10)
-    (@add d 3)
-    (@add c 1)
-    (@add a 1)
+    (@inc b 7)
+    (@inc c 10)
+    (@inc d 3)
+    (@inc c 1)
+    (@inc a 1)
 ))
 
-(@add b 2)
+(@inc b 2)
 (@print b)
 
-(@add c 1)
+(@inc c 1)
 (@print c)
 
-(@add c 7)
+(@inc c 7)
 (@print c)
 (@print c)
 
-(@add c 3)
+(@inc c 3)
 (@print c)
 
-(@add d 2)
+(@inc d 2)
 (@print d)
 
-(@add b 15)
+(@inc b 15)
 (@print b)
 
 (@print c)
 
-(@add d 3)
+(@inc d 3)
 (@print d)
 
-(@add d -6)
+(@inc d -6)
 (@print d)
 
-(@add d -8)
+(@inc d -8)
 (@print d)
 
-(@add e 1)
+(@inc e 1)
 (@print e)

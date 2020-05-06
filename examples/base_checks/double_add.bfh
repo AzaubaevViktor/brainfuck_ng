@@ -1,6 +1,6 @@
-(@add 0 10)
-(@add 2 12)
-(@add 1 11)
+(@inc (@addr 0) 10)
+(@inc (@addr 2) 12)
+(@inc (@addr 1) 11)
 
 (@@mem $0 10)
 (@@mem $1 11)

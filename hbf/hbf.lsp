@@ -6,7 +6,13 @@
     (@_back addr)
 ))
 
-(@defmacro @add [addr value] (
+(@defmacrocommand @back [addr] (
+    (@_back addr)
+    (@super:inline)
+    (@_go addr)
+))
+
+(@defmacro @inc [addr value] (
     (@go addr (
         (@_plus value)
     ))
@@ -28,7 +34,7 @@
 (@defmacrocommand @cycle [addr] (
     (@go addr (
         (@_cycle (
-            (@go (- 0 addr) (
+            (@back addr (
                 (@super:inline)
             ))
         ))
@@ -45,5 +51,5 @@
 
 (@defmacro @set [addr value] (
     (@zero addr)
-    (@add addr value)
+    (@inc addr value)
 ))

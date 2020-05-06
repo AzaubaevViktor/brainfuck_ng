@@ -1,8 +1,8 @@
-(@add 3 10)
+(@inc (@addr 3) 10)
 
-(@cycle 3 (
-    (@add 4 2)
-    (@add 3 -1)
+(@cycle (@addr 3) (
+    (@inc (@addr 4) 2)
+    (@inc (@addr 3) -1)
 ))
 
 (@@mem $3 0)

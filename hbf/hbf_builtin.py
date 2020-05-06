@@ -1,8 +1,23 @@
-from typing import List
+from typing import List, Optional
 
 from executor import ExecutorError, Executor
 from executor.builtin import BaseModule
 from lexer import LexerResultT, Lemma
+
+
+class Addr:
+    def __init__(self, addr: int):
+        self.addr = addr
+
+    def __repr__(self):
+        return f"<Addr:{self.addr}>"
+
+
+class HBFError(ExecutorError):
+    @staticmethod
+    def check_addr(obj: Addr, lemma: Optional[LexerResultT] = None):
+        if not isinstance(obj, Addr):
+            raise HBFError(f"Must be address, not {type(obj)}", lemma)
 
 
 class HBFBuiltin(BaseModule):
@@ -22,34 +37,44 @@ class HBFBuiltin(BaseModule):
             "@let": self.let,
             '@defmacro': self.defmacro,
             '@defmacrocommand': self.defmacro_command,
+            '@addr': self.to_addr,
         }
 
-    # TODO: create this method in lollisp
+    def to_addr(self, value_: LexerResultT, executor: Executor):
+        value = executor(value_)
+        return Addr(value)
+
+    # TODO: create this method throught defn:inline
     def let(self, name: Lemma, value: LexerResultT, executor):
         self.last_address += 1
 
-        executor.variables[name.text] = self.last_address
+        executor.variables[name.text] = Addr(self.last_address)
 
         return "".join((self._move(self.last_address),
                         self.plus(value, executor),
                         self._move(-self.last_address)
                         ))
 
-    def _move(self, addr):
+    def _move(self, addr: int):
         if addr < 0:
             return "<" * (-addr)
         return ">" * addr
 
     def go(self, addr_: LexerResultT, executor):
         addr = executor(addr_)
-        return self._move(addr)
+        HBFError.check_addr(addr, addr_)
+        return self._move(addr.addr)
 
     def back(self, addr_: LexerResultT, executor):
         addr = executor(addr_)
-        return self._move(-addr)
+        HBFError.check_addr(addr, addr_)
+        return self._move(-addr.addr)
 
     def plus(self, value_: LexerResultT, executor):
         value = executor(value_)
+        if not isinstance(value, int):
+            raise HBFError(f"Must be int, not {type(value)}", value_)
+
         if value < 0:
             return "-" * -value
         return "+" * value

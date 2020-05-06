@@ -2,7 +2,7 @@
 
 (@print a)
 
-(@add a 1)
+(@inc a 1)
 (@print a)
 
 (@set a 97)
