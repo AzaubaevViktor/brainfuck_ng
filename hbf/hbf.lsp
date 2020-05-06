@@ -53,3 +53,34 @@
     (@zero addr)
     (@inc addr value)
 ))
+
+(@defmacro @_move [to from] (
+    (@cycle from (
+        (@inc from -1)
+        (@inc to 1)
+    ))
+))
+
+(@defmacro @_move2 [to1 to2 from] (
+    (@cycle from (
+        (@inc from -1)
+        (@inc to1 1)
+        (@inc to2 1)
+    ))
+))
+
+(@defmacro @copy [to from] (
+    (@zero to)
+    (@let res 0)
+    (@_move2 res to from)
+    (@_move from res)
+))
+
+(@defmacro @add [to from] (
+    (@let res 0)
+    (@copy res from)
+    (@cycle res (
+        (@inc res -1)
+        (@inc to 1)
+    ))
+))
