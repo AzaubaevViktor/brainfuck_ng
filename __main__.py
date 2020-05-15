@@ -10,6 +10,7 @@ Interactive mode
 
 """
 import sys
+from time import time
 from traceback import print_exc
 from typing import Iterable
 
@@ -24,7 +25,7 @@ from lexer import do_lex, BaseSource
 variables = {
     'version': 2,
     '@': globals(),
-    'debug': True,
+    'debug': False,
 }
 
 
@@ -41,11 +42,26 @@ except ExecutorError as e:
 
 class StdInSource(BaseSource):
     def __iter__(self) -> Iterable[str]:
-        s = click.edit()
+        s = ""
+        while True:
+            sys.stdin.flush()
+            char = click.getchar()
+            sys.stdin.flush()
+
+            if variables['debug']:
+                print(f"`{char}`:{ord(char)}")
+
+            if char in ('\n', '\r'):
+                break
+
+            sys.stdout.write(char)
+            sys.stdout.flush()
+
+            s += char
+        sys.stdout.write("\n")
+        sys.stdout.flush()
 
         sys.stdin.flush()
-
-        print(s)
 
         # TODO: Control input lines
         # TODO: Use Lexer for more informative output
@@ -62,7 +78,7 @@ if __name__ == '__main__':
 
     while True:
         sys.stderr.flush()
-        sys.stdout.write("~~> ")
+        sys.stdout.write("╰~~> ")
         sys.stdout.flush()
 
         try:
@@ -74,8 +90,8 @@ if __name__ == '__main__':
         except:
             print_exc()
         finally:
-            print()
-            click.pause()
+            time_ = time()
+            print(f"╭ {time_:.0f} {'DEBUG' if variables['debug'] else ''}")
 
 
 def old_main():
