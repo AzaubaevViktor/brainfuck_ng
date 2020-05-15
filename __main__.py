@@ -140,11 +140,10 @@ if __name__ == '__main__':
             source.shutdown()
             raise
         except:
-            print(format_exc())
+            print(format_exc().replace("\n", "\n\r"))
         finally:
             time_ = time()
             print(f"╭ {time_:.0f} {'DEBUG' if variables['debug'] else ''}")
-
 
 
 def old_main():
