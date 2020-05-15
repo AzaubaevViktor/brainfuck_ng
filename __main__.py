@@ -41,20 +41,11 @@ except ExecutorError as e:
 
 class StdInSource(BaseSource):
     def __iter__(self) -> Iterable[str]:
-        s = ""
-
-        while True:
-            char = click.getchar()
-            if char == "\n" or char == "\r":
-                break
-
-            s += char
-            sys.stdout.write(char)
-            sys.stdout.flush()
+        s = click.edit()
 
         sys.stdin.flush()
 
-        print()
+        print(s)
 
         # TODO: Control input lines
         # TODO: Use Lexer for more informative output
@@ -84,6 +75,7 @@ if __name__ == '__main__':
             print_exc()
         finally:
             print()
+            click.pause()
 
 
 def old_main():
