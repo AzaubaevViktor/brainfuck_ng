@@ -20,7 +20,7 @@ import readchar as readchar
 from executor import Executor, ExecutorError
 from executor.builtin import ModuleImporter
 
-from lexer import do_lex, BaseSource
+from lexer import do_lex, BaseSource, LexerError
 
 variables = {
     'version': 2,
@@ -93,8 +93,16 @@ class StdInSource(BaseSource):
             if variables['debug']:
                 self.print(f"Key: {char}: {chr(char)} ")
 
-            if char == 13:
-                break
+            if char == 13:  # Enter key
+                try:
+                    do_lex(s)
+                    break
+                except LexerError as e:
+                    if e.ns_stack:
+                        pos = e.ns_stack[-1].pos + 1
+                        self.print(f"\n{'':<5}" + ("·" * (pos - 1)), end=' ')
+                        s += "\n" + " " * pos
+                    continue
 
             if char == 8 or char == 127 or char == curses.KEY_BACKSPACE:
                 if s:
@@ -115,10 +123,12 @@ class StdInSource(BaseSource):
     def __eq__(self, other: "BaseSource"):
         return True
 
-    def print(self, *args, end="\n\r", **kwargs):
+    def print(self, *args, end="\n", **kwargs):
         s = " ".join(map(str, args))
         s += " ".join(f"{k}={v}" for k, v in kwargs.items())
         s += str(end)
+
+        s = s.replace("\n", "\n\r")
 
         sys.stdout.write(s)
         sys.stdout.flush()

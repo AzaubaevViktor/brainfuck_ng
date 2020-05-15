@@ -1,8 +1,8 @@
 from typing import Union, List
 
-from . import LexerError
+from . import LexerError, ExpressionT, LexerResultT
 from .sources import BaseSource, StringSource
-from .expr import LexerResultT, Expression, ExpressionT
+from .expr import Expression
 from .lemma import Lemma, StringLemma
 
 DIVIDERS = ' \t\n'

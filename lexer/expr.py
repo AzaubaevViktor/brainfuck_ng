@@ -1,10 +1,7 @@
-from typing import Union, Sequence, List
+from typing import Sequence, List
 
+from ._types import ExpressionT, LexerResultT
 from .exc import LexerError
-from .lemma import Lemma
-
-ExpressionT = Union[Lemma, "Expression", Sequence['ExpressionT']]
-LexerResultT = Union[Lemma, Sequence["LexerResultT"]]
 
 
 class Expression:
@@ -19,6 +16,13 @@ class Expression:
         if type_first_char:
             self.set_type(type_first_char)
         self.lemmas: List[ExpressionT] = list(items or [])
+
+    @property
+    def pos(self) -> int:
+        if not self.lemmas:
+            return 0
+
+        return self.lemmas[0].pos
 
     def append(self, item: ExpressionT):
         self.lemmas.append(item)
