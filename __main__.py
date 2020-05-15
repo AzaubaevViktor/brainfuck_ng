@@ -98,6 +98,7 @@ class StdInSource(BaseSource):
                     do_lex(s)
                     break
                 except LexerError as e:
+                    # TODO: Fix Multiline inputs, f.e. defn
                     if e.ns_stack:
                         pos = e.ns_stack[-1].pos + 1
                         self.print(f"\n{'':<5}" + ("·" * (pos - 1)), end=' ')
