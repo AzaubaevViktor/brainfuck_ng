@@ -1,0 +1,7 @@
+(let a 30)
+
+(let result 0)
+
+(@copy result (@/ a 10))
+
+(@@mem a 9)
