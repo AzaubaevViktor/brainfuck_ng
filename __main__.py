@@ -11,7 +11,7 @@ Interactive mode
 """
 import sys
 from time import time
-from traceback import print_exc
+from traceback import print_exc, format_exc
 from typing import Iterable
 
 import click as click
@@ -33,6 +33,8 @@ from modules.builtin import BaseBuiltin  # Importing Base Builtin values
 print(f"Builtin here: {BaseBuiltin}")
 executor = Executor(ModuleImporter.scope_with_import(), **variables)
 
+variables = executor.variables
+
 try:
     executor(*do_lex('(import:inline "modules/repl.lsp")'))
 except ExecutorError as e:
@@ -40,28 +42,69 @@ except ExecutorError as e:
     raise
 
 
+import curses
+
+
 class StdInSource(BaseSource):
+    def __init__(self):
+
+        # ----- INIT -----
+        self.stdscr = curses.initscr()
+        curses.cbreak()
+        curses.noecho()
+        # self.stdscr.keypad(1)
+
+        # # ----- PRINT -----
+        # text = "Hello world"
+        # self.stdscr.addstr(1, 0, text + "\n")
+        # self.stdscr.refresh()
+
+        # # ----- MAIN LOOP ------
+        # while 1:
+        #     c = stdscr.getch()
+        #     if c == ord('q'):
+        #         break
+        #     if c == 8 or c == 127 or c == curses.KEY_BACKSPACE:
+        #         stdscr.addstr("\b \b")
+        #     else:
+        #         stdscr.addch(c)
+
+        # ----- RESET TERMINAL -----
+    def shutdown(self):
+        import curses
+
+        curses.echo()
+        curses.nocbreak()
+        # self.stdscr.keypad(1)
+        curses.endwin()
+
     def __iter__(self) -> Iterable[str]:
         s = ""
         while True:
-            sys.stdin.flush()
-            char = click.getchar()
-            sys.stdin.flush()
+            raw_data = click.getchar()
 
-            if variables['debug']:
-                print(f"`{char}`:{ord(char)}")
-
-            if char in ('\n', '\r'):
+            if len(raw_data) > 1:
+                self.print()
+                self.print(f"Command: {', '.join(map(str, map(ord, raw_data)))}")
                 break
 
-            sys.stdout.write(char)
-            sys.stdout.flush()
+            char = ord(raw_data)
 
-            s += char
-        sys.stdout.write("\n")
-        sys.stdout.flush()
+            if variables['debug']:
+                self.print(f"Key: {char}: {chr(char)} ")
 
-        sys.stdin.flush()
+            if char == 13:
+                break
+
+            if char == 8 or char == 127 or char == curses.KEY_BACKSPACE:
+                if s:
+                    self.print("\b \b", end='')
+                    s = s[:-1]
+            else:
+                self.print(chr(char), end='')
+                s += chr(char)
+
+        self.print()
 
         # TODO: Control input lines
         # TODO: Use Lexer for more informative output
@@ -72,26 +115,36 @@ class StdInSource(BaseSource):
     def __eq__(self, other: "BaseSource"):
         return True
 
+    def print(self, *args, end="\n\r", **kwargs):
+        s = " ".join(map(str, args))
+        s += " ".join(f"{k}={v}" for k, v in kwargs.items())
+        s += str(end)
+
+        sys.stdout.write(s)
+        sys.stdout.flush()
+
 
 if __name__ == '__main__':
     source = StdInSource()
 
+    print = source.print
+
     while True:
-        sys.stderr.flush()
-        sys.stdout.write("╰~~> ")
-        sys.stdout.flush()
+        print("╰~~>", end=' ')
 
         try:
             print(executor.run(source))
         except ExecutorError as e:
             print(e.pretty())
         except (SystemExit, KeyboardInterrupt):
+            source.shutdown()
             raise
         except:
-            print_exc()
+            print(format_exc())
         finally:
             time_ = time()
             print(f"╭ {time_:.0f} {'DEBUG' if variables['debug'] else ''}")
+
 
 
 def old_main():
