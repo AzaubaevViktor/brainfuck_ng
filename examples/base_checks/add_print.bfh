@@ -2,5 +2,5 @@
 
 (@print (@addr 0))
 
-(@@mem $0 97)
+(@@mem (@addr 0) 97)
 (@@out "a")

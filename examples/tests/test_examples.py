@@ -5,6 +5,7 @@ import pytest
 from bytecode import ByteCode
 from executor import Executor, ExecutorError
 from executor.builtin import ModuleImporter
+from hbf.hbf_builtin import Addr
 from interpreter import Interpreter
 from lexer import FileSource, do_lex, Lemma, LexerResultT, StringLemma
 
@@ -13,7 +14,7 @@ def _files():
     for root, folders, files in os.walk("examples"):
         for file in files:
             if file.endswith(".bfh"):
-                yield os.path.join(root, file)
+                yield os.path.relpath(os.path.join(root, file), "examples")
 
 
 files = tuple(_files())
@@ -24,14 +25,12 @@ def test_example(file_name):
     memory_check = [None] * 10
     out_check = None
 
-    def _parse_addr(lemma: Lemma):
-        return int(lemma.text[1:])
-
     def hbf_check_mem(addr_: Lemma, value_: LexerResultT, executor):
-        addr = _parse_addr(addr_)
+        addr = executor(addr_)
+        assert isinstance(addr, Addr)
         value = executor(value_)
 
-        memory_check[addr] = value
+        memory_check[addr.addr] = value
 
     def hbf_check_out(text: StringLemma, executor):
         assert isinstance(text, StringLemma)
@@ -58,7 +57,7 @@ def test_example(file_name):
         executor.run("(import:builtin:inline hbf)")
         executor.run('(import:inline "hbf/hbf.lsp")')
 
-        source = FileSource(file_name)
+        source = FileSource(os.path.join("examples", file_name))
         lex_result = do_lex(source)
 
         results = [

@@ -5,5 +5,5 @@
     (@inc (@addr 5) -1)
 ))
 
-(@@mem $5 0)
-(@@mem $4 20)
+(@@mem (@addr 5) 0)
+(@@mem (@addr 4) 20)

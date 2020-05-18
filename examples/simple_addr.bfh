@@ -6,7 +6,7 @@
 (@print (@addr 2))
 
 (@@out "a")
-(@@mem $2 97)
-(@@mem $3 13)
-(@@mem $4 15)
-(@@mem $5 10)
+(@@mem (@addr 2) 97)
+(@@mem (@addr 3) 13)
+(@@mem (@addr 4) 15)
+(@@mem (@addr 5) 10)

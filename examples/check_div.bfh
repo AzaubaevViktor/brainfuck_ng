@@ -1,6 +1,6 @@
-(let a 30)
+(@let a 30)
 
-(let result 0)
+(@let result 0)
 
 (@copy result (@/ a 10))
 

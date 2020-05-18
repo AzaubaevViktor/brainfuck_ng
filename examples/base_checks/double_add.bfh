@@ -2,6 +2,6 @@
 (@inc (@addr 2) 12)
 (@inc (@addr 1) 11)
 
-(@@mem $0 10)
-(@@mem $1 11)
-(@@mem $2 12)
+(@@mem (@addr 0) 10)
+(@@mem (@addr 1) 11)
+(@@mem (@addr 2) 12)
