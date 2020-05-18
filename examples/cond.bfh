@@ -1,0 +1,25 @@
+(@let value 0)
+
+(@defmacro calc [value result] (
+    (@zero result)
+    (@if value (
+        (@set result 49)
+        (@print result)
+    )(
+        (@set result 48)
+        (@print result)
+    ))
+))
+
+(@let result_false 0)
+(calc value result_false)
+
+(@let result_true 0)
+(@set value 1)
+(calc value result_true)
+
+(@@mem result_false 48)
+(@@mem result_true 49)
+
+(@@out "01")
+

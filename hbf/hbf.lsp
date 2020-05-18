@@ -84,3 +84,23 @@
         (@inc to 1)
     ))
 ))
+
+(@defmacro @if [cond_orig true_branch false_branch] (
+    (@let is_false 1)
+
+    (@let cond 0)
+    (@copy cond cond_orig)
+
+    (@cycle cond (
+        true_branch
+
+        (@set is_false 0)
+        (@set cond 0)
+    ))
+
+    (@cycle is_false (
+        false_branch
+
+        (@set is_false 0)
+    ))
+))
