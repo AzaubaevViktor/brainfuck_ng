@@ -24,7 +24,8 @@ class BaseBuiltin(BaseModule):
             'item=': self._setitem,
             'True': True,
             'False': False,
-            'exit': self._exit
+            'exit': self._exit,
+            'if': self._switch,
         }
 
     @staticmethod
@@ -125,6 +126,14 @@ class BaseBuiltin(BaseModule):
 
         wrapper_op.__name__ = f"wrapper_{op_func.__name__}"
         return wrapper_op
+
+    @staticmethod
+    def _switch(condition: LexerResultT, *to_execute: LexerResultT, executor: 'Executor'):
+        if value := executor(condition):
+            for item in to_execute:
+                value = executor(item)
+
+        return value
 
     @staticmethod
     def _exit(code: LexerResultT, executor):

@@ -3,13 +3,27 @@
 (print "Hello from LolLisp REPL interpreter!")
 (print "Version:" version)
 
-(print "Little magic here...")
+(print "Little magic happens here...")
 
 (= @exec (item @ "executor"))
 (= @vars (. @exec variables))
 
-(print "Now you can use `@exec` and `@vars`")
-(print "Enjoy!")
+(print "Now you can use: `@exec` and `@vars`")
 (print)
-(print "To disable debug output use:")
-(print "(= debug False)")
+(print "To enable debug output use:")
+(print "(= debug True)")
+
+(defn help [name] (
+    (if ((op eq) name "help")
+        (print "✅ You can do it!")
+        (print "And you can do:")
+        (print "  : (exit 0)")
+        (print "  : (+ 1 1)")
+    )
+))
+
+(print "To show help use: (help \"help\")")
+(print)
+(print "Enjoy!")
+
+

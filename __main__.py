@@ -134,9 +134,14 @@ class StdInSource(BaseSource):
         sys.stdout.write(s)
         sys.stdout.flush()
 
+    def _print(self, *objs: 'LexerResultT', executor):
+        self.print(*map(executor, objs))
+
 
 if __name__ == '__main__':
     source = StdInSource()
+
+    variables['print'] = source._print
 
     print = source.print
 
