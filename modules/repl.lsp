@@ -22,6 +22,27 @@
         (print "  : (exit 0)")
         (print "  : (+ 1 1)")
     )
+
+    (if (== name "@vars")
+        (print "Словарь переменных, который использует @exec")
+        (print)
+        (print "В словаре есть методы, их можно запускать так:")
+        (print "  : (* 100 200)")
+        (print "  : (+ 1 (/ 1 2))")
+        (print "  : (== (+ 1 (/ 1 2)) 1.5)")
+        (print)
+        (print "Добавить значение в @vars:")
+        (print "  : (= var_name (+ 1 1))")
+        (print)
+        (print "help \"defn\"")
+    )
+
+   (if (== name "defn")
+        (print "Позволяет создавать функции")
+        (print "  : (defn test [a b] ( (+ a b) ))")
+        (print "  : (test 1 2)")
+   )
+
 ))
 
 (print "To show help use: (help \"help\")")
