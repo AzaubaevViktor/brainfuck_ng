@@ -26,7 +26,7 @@ repl_vars = {
 }
 
 variables = {
-    'version': 2,
+    'version': 3,
     'debug': False,
     '@repl': repl_vars,
 }
