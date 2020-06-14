@@ -22,18 +22,22 @@ from executor.builtin import ModuleImporter
 
 from lexer import do_lex, BaseSource, LexerError
 
+repl_vars = {
+}
+
 variables = {
     'version': 2,
-    '@': globals(),
     'debug': False,
+    '@repl': repl_vars,
 }
 
 
 from modules.builtin import BaseBuiltin  # Importing Base Builtin values
 print(f"Builtin here: {BaseBuiltin}")
-executor = Executor(ModuleImporter.scope_with_import(), **variables)
+repl_vars['executor'] = executor = Executor(ModuleImporter.scope_with_import(), **variables)
 
-variables = executor.variables
+repl_vars['variables'] = variables = executor.variables
+
 
 try:
     executor(*do_lex('(import:inline "modules/repl.lsp")'))
@@ -134,10 +138,11 @@ class StdInSource(BaseSource):
                 self.print(chr(char), end='')
                 s += chr(char)
 
-            self.print()
 
             if self.debug:
                 self.print(s)
+
+        self.print()
 
         if self.debug:
             self.print("Command received")
@@ -166,7 +171,7 @@ class StdInSource(BaseSource):
 
 
 if __name__ == '__main__':
-    source = StdInSource()
+    repl_vars['lexer'] = source = StdInSource()
 
     variables['print'] = source._print
 

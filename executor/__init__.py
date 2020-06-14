@@ -90,6 +90,21 @@ class Variables:
         self.data.update(new_data)
         self.data.update(kwargs)
 
+    def __repr__(self):
+        s = "Variables "
+        if self.parent:
+            s += f"of {type(self.parent)}"
+        else:
+            s += "ROOT"
+        s += "\n"
+
+        for key, value in self.data.items():
+            if value is self:
+                value = "<SELF>"
+            s += f"  {key} : {value}\n"
+
+        return s
+
 
 class Executor:
     def __init__(self, variables: VariablesT, **kwargs):

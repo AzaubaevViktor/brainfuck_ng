@@ -5,7 +5,7 @@
 
 (print "Little magic happens here...")
 
-(= @exec (item @ "executor"))
+(= @exec (item @repl "executor"))
 (= @vars (. @exec variables))
 
 (print "Now you can use: `@exec` and `@vars`")
