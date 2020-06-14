@@ -13,6 +13,8 @@
 (print "To enable debug output use:")
 (print "(= debug True)")
 
+(= == (op eq))
+
 (defn help [name] (
     (if ((op eq) name "help")
         (print "✅ You can do it!")

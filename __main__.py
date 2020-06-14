@@ -47,6 +47,7 @@ import curses
 
 class StdInSource(BaseSource):
     def __init__(self):
+        self.debug = False
 
         # ----- INIT -----
         self.stdscr = curses.initscr()
@@ -77,6 +78,26 @@ class StdInSource(BaseSource):
         curses.nocbreak()
         # self.stdscr.keypad(1)
         curses.endwin()
+
+    def _new_chars(self):
+        raw_data = click.getchar()
+
+        if len(raw_data) == 1:
+            yield raw_data
+
+        if len(raw_data) > 1:
+            if self.debug:
+                self.print()
+                self.print(f"Command: {', '.join(map(str, map(ord, raw_data)))}")
+
+            # UP, DOWN, LEFT, RIGHT keys
+            if len(raw_data == 3) and raw_data[0] == 27 and raw_data[1] == 91:
+                if self.debug:
+                    # TODO: Implement history
+                    self.print("Not implemented yet")
+                return
+
+            yield from raw_data
 
     def __iter__(self) -> Iterable[str]:
         s = ""
@@ -113,7 +134,13 @@ class StdInSource(BaseSource):
                 self.print(chr(char), end='')
                 s += chr(char)
 
-        self.print()
+            self.print()
+
+            if self.debug:
+                self.print(s)
+
+        if self.debug:
+            self.print("Command received")
 
         # TODO: Control input lines
         # TODO: Use Lexer for more informative output
@@ -160,6 +187,8 @@ if __name__ == '__main__':
         finally:
             time_ = time()
             print(f"╭ {time_:.0f} {'DEBUG' if variables['debug'] else ''}")
+
+            source.debug = variables.get('debug', False)
 
 
 def old_main():
