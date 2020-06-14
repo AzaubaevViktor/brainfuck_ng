@@ -16,7 +16,7 @@
 (= == (op eq))
 
 (defn help [name] (
-    (if ((op eq) name "help")
+    (if (== name "help")
         (print "✅ You can do it!")
         (print "And you can do:")
         (print "  : (exit 0)")
